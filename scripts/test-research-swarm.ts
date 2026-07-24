@@ -1,7 +1,7 @@
 /**
  * Research swarm probe. Run: npx tsx --env-file=.env.local scripts/test-research-swarm.ts [url]
  * Uses getAdapters() — respects USE_REAL_* flags, so it's mock-safe by default
- * and upgrades to live Senso/Pioneer/Band/Actian/Guild as keys land.
+ * and upgrades to live Senso/Pioneer/Band/Actian as keys land.
  */
 import { getAdapters } from '../src/lib/adapters';
 import { runResearchSwarm } from '../src/lib/agents/researchSwarm';

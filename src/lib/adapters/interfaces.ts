@@ -37,7 +37,13 @@ export interface Feed {
   post(room: string, event: { agent: string; kind: string; payload: unknown }): Promise<void>;
 }
 
-/** Guild — governance decorator. Real only if it can OBSERVABLY block something. */
+/**
+ * Governance decorator — client-side observable veto (e.g. block a low-confidence
+ * writeback). Originally scoped as a Guild wrap; cut per the plan's own spike-gate
+ * fallback (Guild's real model is deploying hosted TypeScript agents, not a REST
+ * authorize call — too large a lift for the spike window). Band still carries the
+ * agent-infra integration story.
+ */
 export interface Governance {
   /** returns false to deny; reason surfaces in the feed. */
   approve(action: string, ctx: Record<string, unknown>): Promise<{ ok: boolean; reason?: string }>;

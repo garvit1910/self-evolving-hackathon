@@ -12,8 +12,14 @@ import { createPioneerLLM } from './real/pioneer';
 import { createBandFeed } from './real/band';
 import { createSensoContextStore } from './real/senso';
 import { createActianVectorStore } from './real/actian';
-import { createGuildGovernance } from './real/guild';
 import { createGeminiImageGen } from './real/gemini';
+
+// Guild: cut per plan fallback. Guild's real integration model is "deploy a
+// TypeScript agent to their hosted runtime" (guild agent init/save/publish),
+// not a REST authorize call — confirmed via `guild api`/CLI probing, no
+// workspace or agent existed on the account. Too large a lift for the spike
+// window. Governance stays the client-side observable-veto mock below; Band
+// still carries the agent-infra story per the plan's own fallback.
 
 function flag(name: string): boolean {
   return process.env[name] === '1' || process.env[name] === 'true';
@@ -63,7 +69,7 @@ export function getAdapters() {
     llm: pick('USE_REAL_PIONEER', 'pioneer', createPioneerLLM, mock.llm),
     vector: pick('USE_REAL_ACTIAN', 'actian', createActianVectorStore, mock.vector),
     feed: pick('USE_REAL_BAND', 'band', createBandFeed, mock.feed),
-    governance: pick('USE_REAL_GUILD', 'guild', createGuildGovernance, mock.governance),
+    governance: withTape('governance', mock.governance, mode),
     imageGen: pick('USE_REAL_GEMINI', 'gemini', createGeminiImageGen, mock.imageGen),
   };
 }

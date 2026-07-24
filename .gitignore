@@ -43,3 +43,6 @@ next-env.d.ts
 # hackathon additions
 tapes/
 !.env.local.example
+
+# local-only progress tracking, never commit
+PROGRESS.md

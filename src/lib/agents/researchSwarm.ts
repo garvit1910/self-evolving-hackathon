@@ -2,8 +2,8 @@
  * Research swarm orchestrator — Scout → Analyst → Personasmith, coordinating in
  * a Band room (brand-research:{brandId}) that the UI mirrors as the live "swarm
  * view". Findings are compiled and ingested into Senso (context v1) and embedded
- * into Actian for hot retrieval. Guild gates the publish step so a low-confidence
- * research pass is OBSERVABLY blocked rather than silently shipped.
+ * into Actian for hot retrieval. Governance gates the publish step so a
+ * low-confidence research pass is OBSERVABLY blocked rather than silently shipped.
  */
 
 import type { Fact, Persona } from '@/lib/contracts';
@@ -76,7 +76,7 @@ export async function runResearchSwarm(
 
   const gov = await governance.approve('research_publish', { confidence: avgConfidence(facts) });
   await feed.post(room, {
-    agent: 'guild',
+    agent: 'governance',
     kind: gov.ok ? 'tool_result' : 'error',
     payload: { action: 'research_publish', ...gov },
   });
