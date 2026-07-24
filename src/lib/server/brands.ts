@@ -2,7 +2,7 @@ import type { Brand } from '../contracts';
 import { slugify } from '../hash';
 import { getStore } from '../store';
 
-export const BRAND_COOKIE = 'adcero_brand';
+export const BRAND_COOKIE = 'swarmads_brand';
 export const FIXTURE_BRAND_ID = 'brand-magic-spoon';
 
 export function brandIdForUrl(url: string): string {

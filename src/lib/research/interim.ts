@@ -88,7 +88,7 @@ async function fetchPage(url: string, fetchImpl: typeof fetch): Promise<string |
   try {
     const res = await fetchImpl(url, {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      headers: { 'user-agent': 'Mozilla/5.0 (compatible; AdceroResearch/0.1)' },
+      headers: { 'user-agent': 'Mozilla/5.0 (compatible; SwarmAdsResearch/0.1)' },
     });
     if (!res.ok) return null;
     return await res.text();

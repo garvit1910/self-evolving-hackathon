@@ -7,7 +7,7 @@ import { Nav } from '@/components/shell/nav';
 import { Topbar } from '@/components/shell/topbar';
 
 export const metadata: Metadata = {
-  title: 'Adcero — Self-Evolving Ad Engine',
+  title: 'SwarmAds — Self-Evolving Ad Engine',
   description: 'Brand in, evolving ads out. Offline fixture demo.',
 };
 

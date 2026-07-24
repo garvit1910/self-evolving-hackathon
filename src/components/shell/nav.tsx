@@ -17,7 +17,7 @@ export function Nav() {
     <aside className="flex w-44 shrink-0 flex-col border-r border-line bg-panel">
       <Link href="/" className="flex items-center gap-2 border-b border-line px-5 py-4">
         <span className="inline-block h-2 w-2 bg-accent" />
-        <span className="font-mono text-sm font-bold tracking-[0.25em] text-fg">ADCERO</span>
+        <span className="font-mono text-sm font-bold tracking-[0.25em] text-fg">SWARMADS</span>
       </Link>
       <nav className="flex flex-col gap-0.5 p-2">
         {LINKS.map(({ href, label }) => {

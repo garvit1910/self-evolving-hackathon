@@ -167,15 +167,15 @@ export class ActianVectorStore implements VectorStore {
 // TODO(track-a): return ActianVectorStore once implemented; until then the
 // factory always falls back to the local default even when ACTIAN_URL is set.
 export function getVectorStore(namespace: string): VectorStore {
-  const g = globalThis as typeof globalThis & { __adceroVectors?: Map<string, MemoryVectorStore> };
-  g.__adceroVectors ??= new Map();
+  const g = globalThis as typeof globalThis & { __swarmadsVectors?: Map<string, MemoryVectorStore> };
+  g.__swarmadsVectors ??= new Map();
   // key includes the data root so tests that repoint DATA_DIR get fresh stores
   const root = process.env.DATA_DIR ?? path.join(process.cwd(), '.data');
   const key = `${root}:${namespace}`;
-  let store = g.__adceroVectors.get(key);
+  let store = g.__swarmadsVectors.get(key);
   if (!store) {
     store = new MemoryVectorStore(namespace);
-    g.__adceroVectors.set(key, store);
+    g.__swarmadsVectors.set(key, store);
   }
   return store;
 }

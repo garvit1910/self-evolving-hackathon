@@ -40,7 +40,7 @@ const request = (n: number, productImagePath: string | null): ImageRequest => ({
 });
 
 beforeEach(() => {
-  dataDir = mkdtempSync(path.join(tmpdir(), 'adcero-'));
+  dataDir = mkdtempSync(path.join(tmpdir(), 'swarmads-'));
   vi.stubEnv('DATA_DIR', dataDir);
   vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('network disabled in tests'))));
 });

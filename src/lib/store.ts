@@ -262,10 +262,10 @@ function defaultRoot(): string {
 // One instance per process, surviving Next dev HMR module reloads. Re-created
 // when DATA_DIR changes so tests can point at fresh temp dirs.
 export function getStore(): LocalStore {
-  const g = globalThis as typeof globalThis & { __adceroStore?: LocalStore };
+  const g = globalThis as typeof globalThis & { __swarmadsStore?: LocalStore };
   const root = defaultRoot();
-  if (!g.__adceroStore || g.__adceroStore.root !== root) {
-    g.__adceroStore = new LocalStore(root);
+  if (!g.__swarmadsStore || g.__swarmadsStore.root !== root) {
+    g.__swarmadsStore = new LocalStore(root);
   }
-  return g.__adceroStore;
+  return g.__swarmadsStore;
 }

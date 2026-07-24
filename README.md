@@ -1,4 +1,4 @@
-# Adcero — Self-Evolving Ad Engine (hackathon)
+# SwarmAds — Self-Evolving Ad Engine (hackathon)
 
 Brand URL + product image in → agent swarm researches the brand → context layer →
 creative engine generates ads → ads run in a **simulated market** → a bandit learns →

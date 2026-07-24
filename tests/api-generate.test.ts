@@ -51,7 +51,7 @@ const generate = async (body: unknown): Promise<GenerateResult> => {
 };
 
 beforeEach(async () => {
-  vi.stubEnv('DATA_DIR', mkdtempSync(path.join(tmpdir(), 'adcero-')));
+  vi.stubEnv('DATA_DIR', mkdtempSync(path.join(tmpdir(), 'swarmads-')));
   vi.stubEnv('OPENAI_API_KEY', '');
   vi.stubEnv('LLM_API_KEY', '');
   vi.stubEnv('GEMINI_API_KEY', '');
@@ -85,7 +85,7 @@ describe('POST /api/brands/:id/generate (offline)', () => {
   it('is deterministic across fresh stores', async () => {
     const first = await generate({ generation: 1, count: 4, runId: 'r1' });
 
-    vi.stubEnv('DATA_DIR', mkdtempSync(path.join(tmpdir(), 'adcero-')));
+    vi.stubEnv('DATA_DIR', mkdtempSync(path.join(tmpdir(), 'swarmads-')));
     await seedBrand();
     const second = await generate({ generation: 1, count: 4, runId: 'r1' });
 

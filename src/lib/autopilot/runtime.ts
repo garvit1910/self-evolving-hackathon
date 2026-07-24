@@ -159,5 +159,5 @@ class LiveSimRuntime {
 }
 
 // survives HMR module reloads like the server-side stores
-const g = globalThis as typeof globalThis & { __adceroRuntime?: LiveSimRuntime };
-export const liveSimRuntime: LiveSimRuntime = (g.__adceroRuntime ??= new LiveSimRuntime());
+const g = globalThis as typeof globalThis & { __swarmadsRuntime?: LiveSimRuntime };
+export const liveSimRuntime: LiveSimRuntime = (g.__swarmadsRuntime ??= new LiveSimRuntime());

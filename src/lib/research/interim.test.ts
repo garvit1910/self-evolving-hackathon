@@ -36,7 +36,7 @@ const fakeLLM = (facts: unknown[]): ResearchLLM => ({
 });
 
 beforeEach(() => {
-  vi.stubEnv('DATA_DIR', mkdtempSync(path.join(tmpdir(), 'adcero-')));
+  vi.stubEnv('DATA_DIR', mkdtempSync(path.join(tmpdir(), 'swarmads-')));
   vi.stubEnv('OPENAI_API_KEY', '');
   vi.stubEnv('LLM_API_KEY', '');
   vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('network disabled in tests'))));
