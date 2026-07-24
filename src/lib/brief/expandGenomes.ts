@@ -5,13 +5,25 @@
  * needs 6-8 creatives whose genomes differ, or per-dimension posteriors have
  * nothing to compare. This is that fan-out layer.
  *
- * Indexing uses a SHIFTED round-robin, not a plain one. Plain `axis[i % len]`
- * perfectly confounds any two axes of equal length: with 4 angles and 4 styles
- * across 8 creatives, angle and style would move in lockstep and no downstream
- * math could tell which drove performance. Each axis therefore advances by
- * `floor(i / len) * SHIFTS[dimension]` on wrap, with a DIFFERENT shift per
- * dimension — a shared shift would leave two same-length axes identical, which
- * is the same bug wearing a disguise.
+ * Indexing is a mixed-radix enumeration of the cartesian product of the four
+ * axes, walked with a coprime stride — NOT a per-axis shifted round-robin.
+ * A shift-based scheme was tried first and turned out to be unfixable: the
+ * shift only matters modulo the axis length, so four axes of length 4 have
+ * only three usable residues {1,2,3} and some pair of axes is always forced
+ * to collide (move in perfect lockstep), which is exactly the confounding
+ * this module exists to prevent.
+ *
+ * The mixed-radix scheme instead treats the four axes as digits of one
+ * number in base (La, Lp, Lh, Ls) — `total = La*Lp*Lh*Ls` distinct
+ * combinations exist — and walks that number line with `idx = (i * STEP) %
+ * total`, where `STEP` is coprime to `total`. Because `STEP` is coprime to
+ * `total`, `i -> (i * STEP) % total` is a bijection over `i < total`: every
+ * combination is visited exactly once with no repeats, so combinations are
+ * distinct BY CONSTRUCTION (the `seen` set below is a cheap safety net, not
+ * the mechanism). Each axis is then read off `idx` by successive `% len` /
+ * `div len`, so each axis advances on its own period (its own radix) rather
+ * than sharing one counter with another axis — no two axes can be
+ * functionally dependent on each other regardless of their lengths.
  *
  * Gen-2: for each dimension with a Prior, the axis truncates to 2 values
  * (winner first) so the set concentrates on what won without collapsing to N
@@ -45,26 +57,25 @@ function narrow(axis: string[], priors: Prior[], dimension: Prior['dimension']):
   return second ? [winner.value, second] : [winner.value];
 }
 
-/**
- * Per-dimension shift multipliers. A shared shift is NOT enough: two axes of the
- * same length with the same shift produce identical index sequences, so with 4
- * angles and 4 styles the two would still be perfectly confounded. These values
- * are chosen so that does not happen for any axis length 2-4, and
- * scripts/test-expand-genomes.ts asserts it empirically rather than on trust.
- */
-const SHIFTS: Record<Prior['dimension'], number> = {
-  angle: 1,
-  persona: 2,
-  hook: 3,
-  style: 3,
-};
+function gcd(a: number, b: number): number {
+  while (b) {
+    [a, b] = [b, a % b];
+  }
+  return a;
+}
 
-/** Shifted round-robin — see the file header for why the shift matters. */
-function pick(axis: string[], i: number, shift: number): string {
-  const len = axis.length;
-  // A shift that is a multiple of len degenerates to a plain round-robin.
-  const s = shift % len === 0 ? 1 : shift;
-  return axis[(i + Math.floor(i / len) * s) % len];
+/**
+ * Smallest stride in [2, total) that is coprime to `total`, so that
+ * `i -> (i * stride) % total` is a bijection over `i < total`. Falls back to
+ * 1 when no such stride exists (total <= 2, or every candidate in range
+ * shares a factor with total) — `gcd(1, total) === 1` always holds, so a
+ * stride of 1 (a plain walk) is a safe default, just not decorrelating.
+ */
+function coprimeStride(total: number): number {
+  for (let s = 2; s < total; s++) {
+    if (gcd(s, total) === 1) return s;
+  }
+  return 1;
 }
 
 export function expandGenomes(
@@ -86,19 +97,31 @@ export function expandGenomes(
     'hook',
   );
 
+  const La = angleAxis.length;
+  const Lp = personaAxis.length;
+  const Lh = hookAxis.length;
+  const Ls = styleAxis.length;
+  const total = La * Lp * Lh * Ls;
+  const STEP = coprimeStride(total);
+
   const out: Genome[] = [];
   const seen = new Set<string>();
 
-  // Bounded scan: if the axes cannot yield n distinct combinations, return
-  // however many exist rather than looping forever.
-  for (let i = 0; out.length < n && i < n * 4; i++) {
-    const genome: Genome = {
-      angle: pick(angleAxis, i, SHIFTS.angle),
-      persona: pick(personaAxis, i, SHIFTS.persona),
-      hook: pick(hookAxis, i, SHIFTS.hook),
-      style: pick(styleAxis, i, SHIFTS.style),
-      generation: brief.generation,
-    };
+  // Bounded scan: `total` distinct combinations exist by construction (see
+  // header), so i < total is enough to enumerate all of them; the extra
+  // `n * 4` bound only guards the degenerate `total === 0` case.
+  const bound = Math.max(total, n * 4);
+  for (let i = 0; out.length < n && i < bound; i++) {
+    let idx = (i * STEP) % total;
+    const angle = angleAxis[idx % La];
+    idx = Math.floor(idx / La);
+    const persona = personaAxis[idx % Lp];
+    idx = Math.floor(idx / Lp);
+    const hook = hookAxis[idx % Lh];
+    idx = Math.floor(idx / Lh);
+    const style = styleAxis[idx % Ls];
+
+    const genome: Genome = { angle, persona, hook, style, generation: brief.generation };
     const key = `${genome.angle}|${genome.persona}|${genome.hook}|${genome.style}`;
     if (seen.has(key)) continue;
     seen.add(key);

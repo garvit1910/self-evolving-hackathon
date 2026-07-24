@@ -96,6 +96,35 @@ assert.ok(g2Angles.size <= 2, `gen-2 angle axis must narrow to 2, got ${[...g2An
 assert.equal(g2[0].angle, 'Nostalgia', 'prior winner must lead the narrowed axis');
 for (const g of g2) assert.equal(g.generation, 2);
 
+// --- regression: 4 distinct hooks (hookAxis.length === styleAxis.length) --
+// A shift-based scheme with equal shifts for hook/style collided exactly
+// here: with both axes at length 4, hook and style moved in perfect
+// lockstep. This is the case that must stay decorrelated.
+const fourHookBrief: Brief = {
+  ...brief,
+  hooks: ['hook one', 'hook two', 'hook three', 'hook four'],
+};
+const gFourHooks = expandGenomes(fourHookBrief, personas, 8);
+assert.equal(gFourHooks.length, 8, 'expected 8 genomes with 4 distinct hooks');
+const fourHookAxes: Record<string, string[]> = {
+  angle: gFourHooks.map((g) => g.angle),
+  persona: gFourHooks.map((g) => g.persona),
+  hook: gFourHooks.map((g) => g.hook),
+  style: gFourHooks.map((g) => g.style),
+};
+const fourHookNames = Object.keys(fourHookAxes);
+for (let i = 0; i < fourHookNames.length; i++) {
+  for (let j = i + 1; j < fourHookNames.length; j++) {
+    const a = fourHookAxes[fourHookNames[i]];
+    const b = fourHookAxes[fourHookNames[j]];
+    if (new Set(a).size < 2 || new Set(b).size < 2) continue;
+    assert.ok(
+      !perfectlyCorrelated(a, b),
+      `${fourHookNames[i]} and ${fourHookNames[j]} are perfectly correlated with 4 distinct hooks — posteriors cannot separate them`,
+    );
+  }
+}
+
 // --- degenerate input does not crash ------------------------------------
 const single = expandGenomes({ ...brief, hooks: ['only hook'] }, [personas[0]], 8);
 assert.ok(single.length >= 1 && single.length <= 8);
