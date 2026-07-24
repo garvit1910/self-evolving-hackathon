@@ -11,7 +11,8 @@
     "freeze": "tsx scripts/freeze.ts",
     "smoke": "tsx scripts/smoke.ts",
     "test:genomes": "tsx scripts/test-expand-genomes.ts",
-    "test:compliance": "tsx scripts/test-compliance-gate.ts"
+    "test:compliance": "tsx scripts/test-compliance-gate.ts",
+    "test:creative": "tsx scripts/test-creative-engine.ts"
   },
   "dependencies": {
     "next": "16.2.11",
