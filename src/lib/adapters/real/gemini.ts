@@ -1,54 +1,73 @@
 /**
- * Gemini — real image-gen adapter. Product image passed as reference.
+ * Gemini — script-side image-gen adapter. Product image passed as reference.
  * Set GEMINI_API_KEY (+ GEMINI_IMAGE_MODEL).
  *
- * Product image is fetched and passed as an inlineData reference part. Confirm
- * the image model id and response shape (inline base64 vs. file URI) when the
- * key lands. Slowest, most quota-limited call — pre-bake for the golden run;
- * only gen-2 regenerates live.
+ * UNIFIED at merge: this shim speaks the request shape ALREADY smoke-verified
+ * by Track G's src/lib/imagegen.ts (`x-goog-api-key` header, default model
+ * gemini-3.1-flash-image, parts [{text}, {inline_data}], 4:5 aspect) instead
+ * of the pre-merge unverified variant (`?key=` auth, gemini-2.5-flash-image).
+ * The app path uses src/lib/imagegen.ts directly; this adapter exists for the
+ * standalone engine scripts (`USE_REAL_GEMINI=1 npm run test:creative`).
  */
 
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import type { ImageGen } from '../interfaces';
 
-const MODEL = process.env.GEMINI_IMAGE_MODEL ?? 'gemini-2.5-flash-image';
 const BASE = 'https://generativelanguage.googleapis.com/v1beta';
+
+async function referencePart(refImageUrl: string): Promise<Record<string, unknown> | null> {
+  try {
+    if (/^https?:/.test(refImageUrl)) {
+      const res = await fetch(refImageUrl);
+      if (!res.ok) throw new Error(`fetch ${res.status}`);
+      return {
+        inline_data: {
+          mime_type: res.headers.get('content-type') ?? 'image/png',
+          data: Buffer.from(await res.arrayBuffer()).toString('base64'),
+        },
+      };
+    }
+    // app-relative path (e.g. /fixtures/product.png) → read from public/
+    if (refImageUrl.endsWith('.svg')) return null; // Gemini wants raster references
+    const buf = await readFile(join(process.cwd(), 'public', refImageUrl.replace(/^\//, '')));
+    return { inline_data: { mime_type: 'image/png', data: buf.toString('base64') } };
+  } catch (err) {
+    console.warn(
+      `[gemini] reference image unavailable (${(err as Error).message} ${refImageUrl}) — generating without product conditioning`,
+    );
+    return null;
+  }
+}
 
 export function createGeminiImageGen(): ImageGen {
   return {
     async generate(prompt, refImageUrl) {
       const key = process.env.GEMINI_API_KEY;
       if (!key) throw new Error('GEMINI_API_KEY not set');
+      const model = process.env.GEMINI_IMAGE_MODEL ?? 'gemini-3.1-flash-image';
 
-      // Product image as reference: fetch → base64 → inlineData part. Without
-      // this the generated ad shows a generic product, not the brand's.
       const parts: unknown[] = [{ text: prompt }];
-      if (refImageUrl && /^https?:/.test(refImageUrl)) {
-        const imgRes = await fetch(refImageUrl);
-        if (imgRes.ok) {
-          const buf = Buffer.from(await imgRes.arrayBuffer());
-          parts.unshift({
-            inlineData: {
-              mimeType: imgRes.headers.get('content-type') ?? 'image/png',
-              data: buf.toString('base64'),
-            },
-          });
-        } else {
-          console.warn(
-            `[gemini] reference image fetch failed (${imgRes.status} ${refImageUrl}) — generating without product conditioning`,
-          );
-        }
-      }
+      const ref = refImageUrl ? await referencePart(refImageUrl) : null;
+      if (ref) parts.push(ref);
 
-      const res = await fetch(`${BASE}/models/${MODEL}:generateContent?key=${key}`, {
+      const res = await fetch(`${BASE}/models/${model}:generateContent`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts }] }),
+        headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({
+          contents: [{ parts }],
+          generationConfig: { imageConfig: { aspectRatio: '4:5' } },
+        }),
       });
       if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`);
       const j = (await res.json()) as {
-        candidates: { content: { parts: { inlineData?: { data: string } }[] } }[];
+        candidates?: {
+          content?: { parts?: { inlineData?: { data?: string }; inline_data?: { data?: string } }[] };
+        }[];
       };
-      const b64 = j.candidates?.[0]?.content?.parts?.find((p) => p.inlineData)?.inlineData?.data;
+      const b64 = j.candidates?.[0]?.content?.parts
+        ?.map((p) => p.inlineData?.data ?? p.inline_data?.data)
+        .find(Boolean);
       if (!b64) throw new Error('Gemini returned no image');
       return { imageUrl: `data:image/png;base64,${b64}` };
     },

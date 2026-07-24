@@ -1,20 +1,29 @@
 {
-  "id": "magic-spoon-run1-brief-g1",
+  "id": "magic-spoon-run1-b1",
   "brandId": "magic-spoon",
-  "contextHash": "ctx_b4489a21",
   "generation": 1,
-  "angle": "Comparison",
+  "angle": "high-protein-low-sugar-childhood",
   "persona": "Nostalgic Millennial",
+  "hook": "Tastes like the sugary cereal — really.",
+  "style": "retro-cartoon",
   "coreMessage": "Tastes like the sugary cereal you grew up with, without the sugar crash.",
-  "hooks": [
-    "Playful, nostalgic, cheeky challenger-brand tone.",
-    "High-protein, low-sugar childhood cereal for health-conscious adults.",
-    "High-protein, low-sugar childhood cereal for health-conscious adults."
+  "cta": "Shop now",
+  "sourceFactIds": [
+    "f2",
+    "f1",
+    "f-persona",
+    "f3"
   ],
-  "cta": "Try it today",
-  "style": "lifestyle",
+  "contextVersion": 1,
+  "contextHash": "ctx_b4489a21",
+  "priorSource": "competitive_fact",
+  "hooks": [
+    "Tastes like the sugary cereal — really.",
+    "Meet Magic Spoon, again.",
+    "The social proof moment.",
+    "Playful, nostalgic, cheeky challenger-brand."
+  ],
   "compliance": [
     "Avoid absolute health claims; \"keto-friendly\" allowed, \"cures\" is not."
-  ],
-  "priorProvenance": []
+  ]
 }

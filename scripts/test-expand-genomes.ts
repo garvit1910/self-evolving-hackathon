@@ -5,6 +5,13 @@
  * The decorrelation assertion is the important one: if two genome dimensions move
  * in lockstep, Track G's per-dimension posteriors cannot attribute performance to
  * either of them.
+ *
+ * PINNED DISTRIBUTION (updated DELIBERATELY at merge — see commit message):
+ * under the per-axis wrap-offset walk with the unified fixture (La=5, Lp=3,
+ * Lh=4, Ls=2), coverage at n=8 is angle 5/5, persona 3/3, hook 4/4,
+ * style 2/2 — every axis reaches full coverage. The retired mixed-radix walk
+ * measured angle 4/4, persona 3/3, hook 2/2, style 2/4 on the old fixture,
+ * and under the unified vocabulary left style CONSTANT (1/2) at n=8.
  */
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -13,6 +20,7 @@ import { expandGenomes } from '../src/lib/brief/expandGenomes';
 import { DEFAULT_ANGLES, DEFAULT_STYLES } from '../src/lib/brief/axes';
 
 const brief = JSON.parse(readFileSync('fixtures/brief.g1.json', 'utf8')) as Brief;
+const briefHooks = brief.hooks ?? [];
 
 const personas: Persona[] = ['Nostalgic Millennial', 'Busy Professional', 'Health Optimizer'].map(
   (name, i) => ({
@@ -46,12 +54,16 @@ const keys = g1.map((g) => `${g.angle}|${g.persona}|${g.hook}|${g.style}`);
 assert.equal(new Set(keys).size, 8, 'genomes must be distinct');
 
 // --- every value is verbatim from a legitimate axis ---------------------
+// The lead brief's own angle may be a competitive-fact slug outside
+// DEFAULT_ANGLES; it leads the axis, so it is legitimate too.
+const legitAngles = new Set([brief.angle, ...DEFAULT_ANGLES]);
+const legitStyles = new Set([brief.style, ...DEFAULT_STYLES]);
 const personaNames = new Set([brief.persona, ...personas.map((p) => p.name)]);
 for (const g of g1) {
-  assert.ok(DEFAULT_ANGLES.includes(g.angle), `angle not verbatim: ${g.angle}`);
-  assert.ok(DEFAULT_STYLES.includes(g.style), `style not verbatim: ${g.style}`);
+  assert.ok(legitAngles.has(g.angle), `angle not verbatim: ${g.angle}`);
+  assert.ok(legitStyles.has(g.style), `style not verbatim: ${g.style}`);
   assert.ok(personaNames.has(g.persona), `persona not verbatim: ${g.persona}`);
-  assert.ok(brief.hooks.includes(g.hook), `hook not verbatim: ${g.hook}`);
+  assert.ok(briefHooks.includes(g.hook), `hook not verbatim: ${g.hook}`);
   assert.equal(g.generation, brief.generation);
 }
 
@@ -80,35 +92,29 @@ for (let i = 0; i < names.length; i++) {
   }
 }
 
-// --- axis coverage (Finding 2, final review) ----------------------------
-// Ideally every multi-valued axis contributes >= min(axisLength, 3) distinct
-// values across n=8. Measured on the real fixture (La=4, Lp=3, Lh=2, Ls=4,
-// total=96): angle 4/4, persona 3/3, hook 2/2 all clear that bar — but style,
-// the HIGHEST-order digit in the mixed-radix walk, only reaches 2/4. n=8
-// walks just 8 of the 96 points on the number line, and high-order digits
-// advance slowest, so this is expected, not a regression. This is documented
-// and NOT fixed here (see expandGenomes.ts header "KNOWN LIMITATION"); do
-// not silently relax `style`'s bound further, and do not raise it to
-// min(axisLength,3) without actually fixing the sampling depth, or this
-// assertion will start lying about what the code guarantees.
+// --- axis coverage ------------------------------------------------------
+// The wrap-offset walk guarantees full per-axis coverage once n >= axis
+// length; assert the strong bound min(axisLength, 3) for EVERY axis — the
+// weakened style bound the mixed-radix walk needed is gone.
 function localDedupe(values: (string | undefined)[]): string[] {
   return [...new Set(values.filter((v): v is string => !!v && v.trim().length > 0))];
 }
 const angleAxisLen = localDedupe([brief.angle, ...DEFAULT_ANGLES]).length;
 const styleAxisLen = localDedupe([brief.style, ...DEFAULT_STYLES]).length;
 const personaAxisLen = localDedupe([brief.persona, ...personas.map((p) => p.name)]).length;
-const hookAxisLen = localDedupe(brief.hooks.length ? brief.hooks : [brief.coreMessage]).length;
+const hookAxisLen = localDedupe(briefHooks.length ? briefHooks : [brief.coreMessage]).length;
 
-// Lock in the fixture's axis pool sizes so the numbers quoted above (and the
-// weakened `style` bound below) can't go silently stale if the fixture or
-// DEFAULT_STYLES/DEFAULT_ANGLES vocabulary ever changes.
-assert.equal(styleAxisLen, 4, 'style axis pool size drifted — re-measure the Finding 2 numbers above');
+// Lock in the fixture's axis pool sizes so the numbers quoted above can't go
+// silently stale if the fixture or the axes.ts vocabulary ever changes.
+assert.equal(angleAxisLen, 5, 'angle axis pool size drifted — re-measure the pinned numbers above');
+assert.equal(styleAxisLen, 2, 'style axis pool size drifted — re-measure the pinned numbers above');
+assert.equal(hookAxisLen, 4, 'hook axis pool size drifted — re-measure the pinned numbers above');
 
 const expectedMinDistinct: Record<string, number> = {
   angle: Math.min(angleAxisLen, 3),
   persona: Math.min(personaAxisLen, 3),
   hook: Math.min(hookAxisLen, 3),
-  style: 2, // measured ceiling at n=8 for a 4-value axis — see comment above, NOT min(styleAxisLen, 3)
+  style: Math.min(styleAxisLen, 3),
 };
 for (const dim of Object.keys(expectedMinDistinct)) {
   const got = new Set(axes[dim]).size;
@@ -125,19 +131,25 @@ assert.equal(
   'expandGenomes must be deterministic',
 );
 
-// --- gen-2 narrowing ----------------------------------------------------
-const priors: Prior[] = [{ dimension: 'angle', value: 'Nostalgia', weight: 0.9 }];
+// --- gen-2: an angle prior collapses the axis (exploitation, verbatim) ---
+const priors: Prior[] = [{ dimension: 'angle', value: 'nostalgia-reboot', weight: 0.9 }];
 const g2 = expandGenomes({ ...brief, generation: 2 }, personas, 8, priors);
 const g2Angles = new Set(g2.map((g) => g.angle));
-assert.ok(g2Angles.has('Nostalgia'), 'winning prior must appear');
-assert.ok(g2Angles.size <= 2, `gen-2 angle axis must narrow to 2, got ${[...g2Angles].join(',')}`);
-assert.equal(g2[0].angle, 'Nostalgia', 'prior winner must lead the narrowed axis');
+assert.deepEqual([...g2Angles], ['nostalgia-reboot'], 'gen-2 must ride the angle prior VERBATIM on every genome');
+assert.equal(g2[0].angle, 'nostalgia-reboot', 'prior winner must lead');
 for (const g of g2) assert.equal(g.generation, 2);
 
-// --- regression: 4 distinct hooks (hookAxis.length === styleAxis.length) --
-// A shift-based scheme with equal shifts for hook/style collided exactly
-// here: with both axes at length 4, hook and style moved in perfect
-// lockstep. This is the case that must stay decorrelated.
+// --- gen-2: persona/hook/style priors LEAD their axes without collapsing --
+const leadPriors: Prior[] = [
+  { dimension: 'hook', value: 'Remember Saturday mornings?', weight: 0.8 },
+];
+const gLead = expandGenomes({ ...brief, generation: 2 }, personas, 8, leadPriors);
+assert.equal(gLead[0].hook, 'Remember Saturday mornings?', 'hook prior must lead the axis');
+assert.ok(new Set(gLead.map((g) => g.hook)).size > 1, 'non-angle prior axes keep exploring');
+
+// --- regression: 4 distinct hooks (hookAxis.length === styleAxis.length × 2) --
+// The shift-only scheme collided when two axes shared a length; the wrap
+// offsets must keep same-length axes decorrelated too.
 const fourHookBrief: Brief = {
   ...brief,
   hooks: ['hook one', 'hook two', 'hook three', 'hook four'],
@@ -168,8 +180,8 @@ const single = expandGenomes({ ...brief, hooks: ['only hook'] }, [personas[0]], 
 assert.ok(single.length >= 1 && single.length <= 8);
 assert.ok(single.every((g) => g.hook === 'only hook'));
 
-// --- empty axis returns [] instead of undefined-filled genomes (Finding 5) --
+// --- empty axis returns [] instead of undefined-filled genomes ----------
 const emptyHooks = expandGenomes({ ...brief, hooks: ['  ', ''] }, [], 8);
 assert.deepEqual(emptyHooks, [], 'an empty axis (all-whitespace hooks) must yield no genomes, not undefined fields');
 
-console.log('✅ EXPAND GENOMES OK — 8 distinct, decorrelated, deterministic, gen-2 narrows.');
+console.log('✅ EXPAND GENOMES OK — 8 distinct, decorrelated, deterministic, full axis coverage, gen-2 exploits.');

@@ -41,10 +41,11 @@ function genomeBlock(g: Genome, i: number, personas: Persona[]): string {
 }
 
 function header(brief: Brief, bannedTerms: string[]): string[] {
+  const compliance = brief.compliance ?? [];
   return [
     `Core message: ${brief.coreMessage}`,
     `Call to action: ${brief.cta}`,
-    brief.compliance.length ? `Compliance rules: ${brief.compliance.join(' ')}` : '',
+    compliance.length ? `Compliance rules: ${compliance.join(' ')}` : '',
     `NEVER use these words or phrases: ${bannedTerms.join(', ')}.`,
   ].filter(Boolean);
 }
@@ -52,7 +53,7 @@ function header(brief: Brief, bannedTerms: string[]): string[] {
 /**
  * Deterministic fallback so the returned array is never short. Interpolates
  * `g.angle` and `g.persona` VERBATIM alongside the hook — both are attribution
- * keys (src/lib/contracts/index.ts), so genome distinctness must survive into
+ * keys (src/lib/contracts.ts), so genome distinctness must survive into
  * the artifact even when the LLM produced nothing for this index.
  */
 function fallbackCopy(brief: Brief, g: Genome): string {

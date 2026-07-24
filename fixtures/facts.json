@@ -36,5 +36,13 @@
     "statement": "Avoid absolute health claims; \"keto-friendly\" allowed, \"cures\" is not.",
     "confidence": 0.75,
     "origin": "research"
+  },
+  {
+    "id": "f-persona",
+    "brandId": "magic-spoon",
+    "section": "persona",
+    "statement": "Nostalgic Millennial: wants childhood cereal without the sugar guilt",
+    "confidence": 0.85,
+    "origin": "research"
   }
 ]

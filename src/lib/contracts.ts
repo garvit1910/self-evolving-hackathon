@@ -12,15 +12,44 @@ export type Brand = {
   sensoSourceIds: string[];
 };
 
+export type FactSection =
+  | 'positioning'
+  | 'value_prop'
+  | 'voice'
+  | 'compliance'
+  | 'persona'
+  | 'market_prior';
+
 export type Fact = {
   id: string;
   brandId: string;
-  section: 'positioning' | 'value_prop' | 'voice' | 'compliance' | 'persona' | 'market_prior';
+  section: FactSection;
   statement: string;
   sourceUrl?: string;
   sourceQuote?: string;
   confidence: number;
   origin: 'research' | 'performance_loop';
+};
+
+// UNIFIED at merge (was Track A's contracts/index.ts): a researched audience
+// persona with fact grounding. `name` doubles as the genome persona string.
+export type Persona = {
+  id: string;
+  brandId: string;
+  name: string;
+  summary: string;
+  pains: string[];
+  desires: string[];
+  objections: string[];
+  factIds: string[];
+};
+
+// UNIFIED at merge: a per-dimension prior sampled from performance posteriors
+// (empty for gen-1). `value` is a VERBATIM genome string.
+export type Prior = {
+  dimension: 'angle' | 'persona' | 'hook' | 'style';
+  value: string;
+  weight: number;
 };
 
 export type Genome = {
@@ -118,6 +147,11 @@ export type Brief = {
   contextVersion: number;
   contextHash: string;
   priorSource: 'sampled' | 'competitive_fact' | 'default_rotation';
+  // UNIFIED at merge: optional engine inputs (Track A). A LEAD brief carries a
+  // hook POOL and compliance prose for expandGenomes/complianceGate; the
+  // per-creative briefs persisted alongside creatives leave them unset.
+  hooks?: string[];
+  compliance?: string[];
 };
 
 // ADDED phase-2 (Track A: response shape of GET /api/brands/:id/context; the Senso

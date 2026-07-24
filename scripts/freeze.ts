@@ -2,19 +2,21 @@
  * Spine smoke-test + fixture freeze.
  *   npm run freeze
  *
- * 1. Assembles a BriefInput entirely from mock adapters (zero network).
- * 2. Runs composeBrief — the deterministic spine.
- * 3. Asserts the Brief has every required field (the adapter contract).
- * 4. Writes fixtures/ for Track G to build against.
+ * 1. Assembles brief inputs entirely from mock adapters (zero network).
+ * 2. Runs composeBriefs — the deterministic spine (UNIFIED at merge: Track G's
+ *    composer is the survivor; the lead brief carries the engine's hook pool
+ *    and compliance prose).
+ * 3. Asserts the lead Brief has every required field (the adapter contract).
+ * 4. Writes fixtures/ for the engine scripts to build against.
  *
  * Exits non-zero if the spine is broken. This is the "spine compiles" gate.
  */
 
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Brand, BriefInput, Persona } from '../src/lib/contracts';
+import type { Brand, Brief, Fact, Persona } from '../src/lib/contracts';
 import { createMockAdapters } from '../src/lib/adapters/mocks';
-import { composeBrief } from '../src/lib/brief/composeBrief';
+import { composeBriefs } from '../src/lib/creative/compose';
 
 function assert(cond: unknown, msg: string): asserts cond {
   if (!cond) {
@@ -31,11 +33,24 @@ async function main() {
   const { sourceIds, contextHash } = await adapters.context.ingest([
     { title: 'home', text: 'Cereal reimagined: 0g sugar, 13g protein.' },
   ]);
-  const facts = await adapters.context.search('positioning voice objections', 8);
+  const searched = await adapters.context.search('positioning voice objections', 8);
+
+  const personaFact: Fact = {
+    id: 'f-persona',
+    brandId: 'magic-spoon',
+    section: 'persona',
+    statement: 'Nostalgic Millennial: wants childhood cereal without the sugar guilt',
+    confidence: 0.85,
+    origin: 'research',
+  };
+  const facts: Fact[] = [...searched, personaFact];
 
   // --- retrieval (Actian) ---
   await adapters.vector.upsert(facts.map((f) => ({ id: f.id, text: f.statement })));
   const topK = await adapters.vector.topK('taste nostalgia protein', 3);
+  const rankedFacts = topK
+    .map((t) => facts.find((f) => f.id === t.id))
+    .filter((f): f is Fact => Boolean(f));
 
   const brand: Brand = {
     id: 'magic-spoon',
@@ -60,28 +75,32 @@ async function main() {
     },
   ];
 
-  const input: BriefInput = {
-    runId,
+  const composed = composeBriefs({
     brand,
-    generation: 1,
     facts,
-    personas,
-    topKChunks: topK.map((t) => t.text),
-    priors: [],
+    rankedFacts,
+    count: 6,
+    generation: 1,
+    runId,
+    contextVersion: brand.contextVersion,
+    contextHash,
+  });
+  const brief: Brief = {
+    ...composed[0],
+    hooks: [...new Set(composed.map((b) => b.hook))],
+    compliance: facts.filter((f) => f.section === 'compliance').map((f) => f.statement),
   };
 
-  const brief = composeBrief(input);
-
-  // --- contract assertions: a sponsor "counts" only if composeBrief consumed it ---
-  assert(brief.id === `${runId}-brief-g1`, 'brief id deterministic');
+  // --- contract assertions: a sponsor "counts" only if the composer consumed it ---
+  assert(brief.id === `${runId}-b1`, 'brief id deterministic');
   assert(brief.contextHash === contextHash, 'contextHash provenance carried from Senso');
   assert(brief.angle && typeof brief.angle === 'string', 'angle present');
   assert(brief.coreMessage.length > 0, 'coreMessage from Senso value_prop');
-  assert(brief.hooks.length > 0, 'hooks from Actian top-k / voice');
-  assert(brief.persona === 'Nostalgic Millennial', 'persona from swarm');
+  assert((brief.hooks ?? []).length > 0, 'hook pool composed');
+  assert(brief.persona === 'Nostalgic Millennial', 'persona from research facts');
   assert(Array.isArray(brief.compliance), 'compliance carried');
 
-  // --- freeze fixtures for Track G ---
+  // --- freeze fixtures for the engine scripts ---
   const outDir = join(process.cwd(), 'fixtures');
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, 'brand.json'), JSON.stringify(brand, null, 2));
@@ -89,7 +108,7 @@ async function main() {
   writeFileSync(join(outDir, 'personas.json'), JSON.stringify(personas, null, 2));
   writeFileSync(join(outDir, 'brief.g1.json'), JSON.stringify(brief, null, 2));
 
-  console.log('✅ SPINE OK — composeBrief produced a valid Brief from mock adapters.');
+  console.log('✅ SPINE OK — composeBriefs produced a valid lead Brief from mock adapters.');
   console.log(`   brief.id=${brief.id}  angle=${brief.angle}  contextHash=${brief.contextHash}`);
   console.log(`   fixtures written to ${outDir}/`);
 }

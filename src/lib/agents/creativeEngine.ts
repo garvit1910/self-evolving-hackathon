@@ -24,6 +24,22 @@ import { renderImages } from './imagesmith';
 /** Below this many survivors the set is too thin to be worth publishing. */
 const MIN_SURVIVORS = 4;
 
+/** Renders images for the surviving genomes; index-aligned with `genomes`.
+ *  `mode` feeds GenerateResult.mode.image ('mock' for placeholders). */
+export type RenderImagesFn = (
+  genomes: Genome[],
+  ids: string[],
+) => Promise<{ url: string; mode: 'gemini' | 'openai' | 'svg' | 'mock' }[]>;
+
+/** Caller-tunable seams so the app route and the standalone scripts share this
+ *  orchestrator (UNIFIED at merge — see docs/WIRING.md). Defaults preserve the
+ *  script behavior: imagesmith renderer, `sim-` ad ids, persist via store. */
+export type EngineOptions = {
+  render?: RenderImagesFn;
+  publishedAdIdFor?: (creativeId: string) => string;
+  persist?: boolean;
+};
+
 export type CreativeRunResult = {
   runId: string;
   room: string;
@@ -41,6 +57,8 @@ export type CreativeRunResult = {
   creatives: Creative[];
   dropped: Violation[];
   governance: { ok: boolean; reason?: string };
+  /** Distinct image modes seen this run ('mock' when placeholders/mocks). */
+  imageModes: ('gemini' | 'openai' | 'svg' | 'mock')[];
 };
 
 function roomFor(brandId: string): string {
@@ -52,13 +70,16 @@ export async function runCreativeEngine(
   brand: Brand,
   brief: Brief,
   personas: Persona[],
-  adapters: Adapters,
+  adapters: Pick<Adapters, 'llm' | 'feed' | 'governance' | 'imageGen'>,
   store: CreativeStore,
   n = 8,
   priors: Prior[] = [],
+  options: EngineOptions = {},
 ): Promise<CreativeRunResult> {
   const { llm, feed, governance, imageGen } = adapters;
   const room = roomFor(brand.id);
+  const publishedAdIdFor = options.publishedAdIdFor ?? ((id: string) => `sim-${id}`);
+  const persist = options.persist ?? true;
 
   await feed.join(room);
   await feed.post(room, {
@@ -67,7 +88,7 @@ export async function runCreativeEngine(
     payload: { status: 'starting', briefId: brief.id, generation: brief.generation, n },
   });
 
-  const bannedTerms = await distillBannedTerms(brief.compliance, brief.contextHash, llm);
+  const bannedTerms = await distillBannedTerms(brief.compliance ?? [], brief.contextHash, llm);
   const genomes = expandGenomes(brief, personas, n, priors);
 
   await feed.post(room, {
@@ -109,19 +130,21 @@ export async function runCreativeEngine(
   const ids = survivorGenomes.map((_, i) => `${runId}-c${i + 1}`);
 
   // --- images, only for survivors --------------------------------------
-  const imageUrls = await renderImages(
-    brand, survivorGenomes, personas, ids, runId, imageGen, store, feed, room,
-  );
+  const rendered = options.render
+    ? await options.render(survivorGenomes, ids)
+    : (
+        await renderImages(brand, survivorGenomes, personas, ids, runId, imageGen, store, feed, room)
+      ).map((url) => ({ url, mode: 'mock' as const }));
 
   const creatives: Creative[] = survivorGenomes.map((genome, i) => ({
     id: ids[i],
     briefId: brief.id,
     brandId: brand.id,
-    imageUrl: imageUrls[i],
+    imageUrl: rendered[i].url,
     copy: survivorCopies[i],
     genome,
     status: 'live',
-    publishedAdId: `sim-${ids[i]}`,
+    publishedAdId: publishedAdIdFor(ids[i]),
     arm: { alpha: 1, beta: 1, pulls: 0 },
   }));
 
@@ -141,7 +164,7 @@ export async function runCreativeEngine(
     payload: { action: 'creative_publish', ...gov },
   });
 
-  if (gov.ok) await store.saveRun(runId, creatives);
+  if (gov.ok && persist) await store.saveRun(runId, creatives);
 
   await feed.post(room, {
     agent: 'creative',
@@ -149,5 +172,13 @@ export async function runCreativeEngine(
     payload: { status: 'done', creatives: creatives.length, dropped: dropped.length, governanceOk: gov.ok },
   });
 
-  return { runId, room, brief, creatives, dropped, governance: gov };
+  return {
+    runId,
+    room,
+    brief,
+    creatives,
+    dropped,
+    governance: gov,
+    imageModes: [...new Set(rendered.map((r) => r.mode))],
+  };
 }

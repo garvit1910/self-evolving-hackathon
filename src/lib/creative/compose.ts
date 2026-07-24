@@ -1,21 +1,14 @@
 import type { Brand, Brief, Fact } from '../contracts';
 import { slugify } from '../hash';
+import { DEFAULT_ANGLES, DEFAULT_PERSONAS, DEFAULT_STYLES } from '../brief/axes';
 
 // Deterministic brief composer — no LLM, no fs. Same inputs → same briefs.
 // Angle priority: priors.angle VERBATIM ('sampled') > competitive-advantage
 // fact slug ('competitive_fact') > default rotation ('default_rotation').
-// Genome strings composed here become attribution keys — never rephrased.
+// Genome strings composed here become attribution keys — never rephrased;
+// the vocabulary lives in src/lib/brief/axes.ts (single source).
 
 export type Priors = { angle: string; persona: string; hook: string; style: string };
-
-const DEFAULT_ANGLES = [
-  'problem-solution',
-  'social-proof',
-  'feature-flex',
-  'lifestyle-aspiration',
-];
-const DEFAULT_STYLES = ['retro-cartoon', 'clean-clinical'];
-const DEFAULT_PERSONAS = ['value-conscious shopper', 'busy professional', 'brand enthusiast'];
 
 function uniq<T>(items: T[]): T[] {
   return [...new Set(items)];
