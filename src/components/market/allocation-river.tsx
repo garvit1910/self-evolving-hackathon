@@ -12,12 +12,16 @@ export function AllocationRiver({
   creatives,
   maxDay,
   maxDaily,
+  retiredAdIds = [],
 }: {
   visible: DailyMetrics[];
   creatives: Creative[];
   maxDay: number;
   maxDaily: number;
+  /** Retired arms render dimmed (live mode); replay never passes this. */
+  retiredAdIds?: string[];
 }) {
+  const retired = new Set(retiredAdIds);
   const byDay = new Map<number, Record<string, number>>();
   for (const m of visible) {
     const row = byDay.get(m.day) ?? {};
@@ -77,7 +81,7 @@ export function AllocationRiver({
                 stroke="#0b0d0c"
                 strokeWidth={1}
                 fill={adColor(i)}
-                fillOpacity={0.9}
+                fillOpacity={retired.has(c.publishedAdId) ? 0.25 : 0.9}
                 isAnimationActive={false}
               />
             ))}
@@ -87,8 +91,16 @@ export function AllocationRiver({
       {/* legend: identity is never color-alone */}
       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
         {creatives.map((c, i) => (
-          <span key={c.id} className="flex items-center gap-1.5 font-mono text-[10px] text-mut">
-            <span className="h-2 w-2 rounded-[1px]" style={{ background: adColor(i) }} />
+          <span
+            key={c.id}
+            className={`flex items-center gap-1.5 font-mono text-[10px] ${
+              retired.has(c.publishedAdId) ? 'text-dim line-through' : 'text-mut'
+            }`}
+          >
+            <span
+              className="h-2 w-2 rounded-[1px]"
+              style={{ background: adColor(i), opacity: retired.has(c.publishedAdId) ? 0.35 : 1 }}
+            />
             {c.id} · {c.genome.angle}
           </span>
         ))}

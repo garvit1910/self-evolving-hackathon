@@ -1,9 +1,17 @@
 import { getDataSource } from '@/lib/datasource.server';
-import { fmtInt, fmtLift } from '@/lib/format';
+import { fmtInt, fmtLift, fmtPct } from '@/lib/format';
 
 export default async function LearningsPage() {
   const dataSource = await getDataSource();
-  const learnings = await dataSource.getLearnings();
+  const [learnings, events] = await Promise.all([
+    dataSource.getLearnings(),
+    dataSource.getAutopilotEvents(),
+  ]);
+  // generation verdict — fired by the loop once both gens have enough sample
+  const verdictEvent = events.find((e) => e.step === 'verdict' && e.status === 'done');
+  const verdict = verdictEvent?.payload as
+    | { verdict?: string; gen1Ctr?: number; gen2Ctr?: number }
+    | undefined;
   return (
     <div className="mx-auto max-w-3xl p-6">
       <div className="mb-6 flex items-baseline gap-3">
@@ -11,6 +19,14 @@ export default async function LearningsPage() {
         <span className="font-mono text-xs text-dim">
           extracted from the simulated flight · fed back into context
         </span>
+        {verdict?.verdict === 'gen2_wins' && (
+          <span className="ml-auto rounded-sm bg-accent px-2 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-ink">
+            Gen 2 wins
+            {typeof verdict.gen2Ctr === 'number' && typeof verdict.gen1Ctr === 'number'
+              ? ` · ${fmtPct(verdict.gen2Ctr)} vs ${fmtPct(verdict.gen1Ctr)}`
+              : ''}
+          </span>
+        )}
       </div>
 
       <div className="relative space-y-6 border-l border-line pl-6">

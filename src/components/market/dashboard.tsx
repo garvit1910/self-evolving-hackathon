@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import type { Creative, DailyMetrics } from '@/lib/contracts';
+import type { Creative, DailyMetrics, PanelScore } from '@/lib/contracts';
 import { fmtInt, fmtMoney, fmtPct, fmtRoas } from '@/lib/format';
 import { CountUp } from '@/components/ui/count-up';
 import { AllocationRiver } from './allocation-river';
 import { CtrSparklines } from './ctr-sparklines';
+import { LiveMarketView } from './live-view';
+import { RegretChart } from './regret-chart';
 
 const SPEEDS = [1, 2, 4] as const;
 
@@ -33,10 +35,18 @@ function StatTile({
 export function MarketDashboard({
   metrics,
   creatives,
+  panelScores,
+  brandId,
+  brandActive,
 }: {
   metrics: DailyMetrics[];
   creatives: Creative[];
+  panelScores: PanelScore[];
+  brandId: string;
+  brandActive: boolean;
 }) {
+  // created brands land straight in Live mode (their store has no replay flight)
+  const [mode, setMode] = useState<'replay' | 'live'>(brandActive ? 'live' : 'replay');
   const maxDay = useMemo(() => Math.max(1, ...metrics.map((m) => m.day)), [metrics]);
   const [day, setDay] = useState(1);
   const [playing, setPlaying] = useState(true);
@@ -83,6 +93,40 @@ export function MarketDashboard({
     [metrics],
   );
 
+  const modeToggle = (
+    <div className="flex items-center gap-1 rounded-sm border border-line p-0.5">
+      {(['replay', 'live'] as const).map((m) => (
+        <button
+          key={m}
+          onClick={() => setMode(m)}
+          className={`rounded-[1px] px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider transition-colors ${
+            mode === m ? 'bg-accent text-ink' : 'text-mut hover:text-fg'
+          }`}
+        >
+          {m}
+        </button>
+      ))}
+    </div>
+  );
+
+  if (mode === 'live') {
+    return (
+      <div className="space-y-5 p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-fg">Simulated market</h2>
+          {modeToggle}
+        </div>
+        <LiveMarketView
+          brandId={brandId}
+          creatives={creatives}
+          panelScores={panelScores}
+          brandActive={brandActive}
+        />
+        <RegretChart brandId={brandId} creatives={creatives} panelScores={panelScores} />
+      </div>
+    );
+  }
+
   if (metrics.length === 0) {
     return (
       <p className="p-10 font-mono text-sm text-dim">
@@ -93,6 +137,10 @@ export function MarketDashboard({
 
   return (
     <div className="space-y-5 p-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-fg">Simulated market</h2>
+        {modeToggle}
+      </div>
       {/* day ticker + controls */}
       <div className="flex flex-wrap items-stretch gap-4">
         <div className="flex flex-col justify-between rounded-sm border border-line bg-panel px-4 py-3">
@@ -162,15 +210,7 @@ export function MarketDashboard({
         maxDailyCtr={maxDailyCtr}
       />
 
-      {/* reserved slot: regret-vs-uniform chart (Thompson phase) */}
-      <div className="flex min-h-36 flex-col items-center justify-center rounded-sm border border-dashed border-line bg-panel/40 p-6 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-dim">
-          Regret vs uniform
-        </p>
-        <p className="mt-2 font-mono text-xs text-dim">
-          reserved — appears when the Thompson allocator replaces uniform in phase 2
-        </p>
-      </div>
+      <RegretChart brandId={brandId} creatives={creatives} panelScores={panelScores} />
     </div>
   );
 }
