@@ -9,9 +9,7 @@
  */
 
 import type { Brief, BriefInput } from '@/lib/contracts';
-
-const DEFAULT_ANGLES = ['Comparison', 'Nostalgia', 'Health', 'Convenience'];
-const DEFAULT_STYLES = ['bold-flatlay', 'lifestyle', 'macro-texture', 'retro-pop'];
+import { DEFAULT_ANGLES, DEFAULT_STYLES } from './axes';
 
 export function composeBrief(input: BriefInput): Brief {
   const { runId, brand, generation, facts, personas, topKChunks, priors } = input;
