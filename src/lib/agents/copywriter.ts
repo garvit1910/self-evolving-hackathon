@@ -49,9 +49,14 @@ function header(brief: Brief, bannedTerms: string[]): string[] {
   ].filter(Boolean);
 }
 
-/** Deterministic fallback so the returned array is never short. */
+/**
+ * Deterministic fallback so the returned array is never short. Interpolates
+ * `g.angle` and `g.persona` VERBATIM alongside the hook — both are attribution
+ * keys (src/lib/contracts/index.ts), so genome distinctness must survive into
+ * the artifact even when the LLM produced nothing for this index.
+ */
 function fallbackCopy(brief: Brief, g: Genome): string {
-  return `${g.hook} ${brief.coreMessage} ${brief.cta}.`;
+  return `${g.angle}: ${g.hook} ${brief.coreMessage} ${brief.cta}. (${g.persona})`;
 }
 
 export async function writeCopy(

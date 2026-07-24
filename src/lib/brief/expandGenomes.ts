@@ -7,11 +7,16 @@
  *
  * Indexing is a mixed-radix enumeration of the cartesian product of the four
  * axes, walked with a coprime stride — NOT a per-axis shifted round-robin.
- * A shift-based scheme was tried first and turned out to be unfixable: the
- * shift only matters modulo the axis length, so four axes of length 4 have
- * only three usable residues {1,2,3} and some pair of axes is always forced
- * to collide (move in perfect lockstep), which is exactly the confounding
- * this module exists to prevent.
+ * A shift-ONLY scheme was tried first and turned out to be unfixable AS A
+ * SHIFT: the shift only matters modulo the axis length, so four axes of
+ * length 4 have only three usable residues {1,2,3} and some pair of axes is
+ * always forced to collide (move in perfect lockstep) — exactly the
+ * confounding this module exists to prevent. (A per-axis STRIDE combined
+ * with a distinct per-axis WRAP OFFSET — i.e. more than a bare shift — would
+ * have worked too; what specifically failed was shift-only, not the whole
+ * family of round-robin schemes. The mixed-radix walk below was chosen over
+ * that fix because it also gives a bijection proof for free, not because the
+ * offset fix was impossible.)
  *
  * The mixed-radix scheme instead treats the four axes as digits of one
  * number in base (La, Lp, Lh, Ls) — `total = La*Lp*Lh*Ls` distinct
@@ -21,9 +26,23 @@
  * combination is visited exactly once with no repeats, so combinations are
  * distinct BY CONSTRUCTION (the `seen` set below is a cheap safety net, not
  * the mechanism). Each axis is then read off `idx` by successive `% len` /
- * `div len`, so each axis advances on its own period (its own radix) rather
- * than sharing one counter with another axis — no two axes can be
- * functionally dependent on each other regardless of their lengths.
+ * `div len` — angle off the LOWEST digit, style off the HIGHEST — so each
+ * axis advances on its own period (its own radix) rather than sharing one
+ * counter with another axis — no two axes can be functionally dependent on
+ * each other regardless of their lengths.
+ *
+ * KNOWN LIMITATION (found in final review, not fixed — see plan Finding 2):
+ * when `n` is small relative to `total` (e.g. n=8 against total=96 on the
+ * real fixture: La=4, Lp=3, Lh=2, Ls=4), only n/total of the number line is
+ * walked, and HIGH-ORDER digits barely move in that short a walk. Measured
+ * on the real fixture at n=8: angle 4/4 distinct, persona 3/3, hook 2/2, but
+ * style — the highest-order digit — only reaches 2 of its 4 values. This is
+ * a sampling-depth artifact of walking few points on a big number line, not
+ * a correctness bug in the bijection; it is NOT fixed here (see
+ * scripts/test-expand-genomes.ts for the coverage assertion documenting the
+ * current, weaker guarantee). A future fix would need to bias STEP or the
+ * digit order so early digits rotate faster, which is a bigger change than
+ * this pass's scope justifies.
  *
  * Gen-2: for each dimension with a Prior, the axis truncates to 2 values
  * (winner first) so the set concentrates on what won without collapsing to N
@@ -101,6 +120,12 @@ export function expandGenomes(
   const Lp = personaAxis.length;
   const Lh = hookAxis.length;
   const Ls = styleAxis.length;
+  // An axis can go empty (e.g. hooks that are all whitespace, dedupe()'d to
+  // []), which would make `total` 0 and every `idx % 0` NaN, silently
+  // producing a Genome whose fields are `undefined` at runtime despite the
+  // `string` type. No valid genome can be built with a missing axis, so bail
+  // to an empty result instead.
+  if (La === 0 || Lp === 0 || Lh === 0 || Ls === 0) return [];
   const total = La * Lp * Lh * Ls;
   const STEP = coprimeStride(total);
 

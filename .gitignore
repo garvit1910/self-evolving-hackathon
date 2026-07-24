@@ -44,6 +44,10 @@ next-env.d.ts
 # generated run metadata (images under public/runs/ ARE committed for the golden run)
 .runs/
 tapes/
+# scripts/test-creative-engine.ts writes its own run directories under
+# public/runs/ (finding 4, final review) — those are test fixtures, not the
+# golden run, so they must not be committed as binary output.
+public/runs/test-creative-run*/
 !.env.local.example
 
 # local-only progress tracking, never commit

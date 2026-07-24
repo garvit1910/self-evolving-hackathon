@@ -13,6 +13,7 @@ import type {
   LLM,
   VectorStore,
 } from './interfaces';
+import { FLOOR_TERMS } from '@/lib/creative/bannedTerms';
 
 /** stable sha-ish hash for deterministic contextHash values (demo-grade, not crypto). */
 function stableHash(input: string): string {
@@ -120,6 +121,30 @@ export function createMockLLM(): LLM {
           });
         }
         return { facts: facts.length ? facts : MOCK_FACTS } as unknown as T;
+      }
+      if (schemaHint.includes('copies')) {
+        // The copywriter's prompt emits one `[i] angle: ... | style: ...` block
+        // per genome (see genomeBlock in src/lib/agents/copywriter.ts), followed
+        // by a `    hook: ...` line and a `    Audience: NAME — ...` line. Parse
+        // those markers back out so mock copy is genome-distinct instead of
+        // collapsing to the same fallback string for every variant.
+        const blockRe = /^\[(\d+)\] angle: (.+?) \| style: (.+?)$\n {4}hook: (.+?)$(?:\n {4,}Audience: ([^—\n]+?)(?: —|$))?/gm;
+        const copies: { index: number; copy: string }[] = [];
+        let m: RegExpExecArray | null;
+        while ((m = blockRe.exec(prompt))) {
+          const [, idxStr, angle, style, hook, persona] = m;
+          const audience = persona ? persona.trim() : 'you';
+          let copy = `${angle}: ${hook} — made for ${audience}, ${style} style.`;
+          // Belt-and-suspenders: never let a mock copy contain a floor term,
+          // even though angle/hook/persona text should never legitimately
+          // include one.
+          for (const term of FLOOR_TERMS) {
+            const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig');
+            copy = copy.replace(re, '');
+          }
+          copies.push({ index: Number(idxStr), copy });
+        }
+        return { copies } as unknown as T;
       }
       if (schemaHint.includes('factIds')) {
         const ids = [...new Set([...prompt.matchAll(/\[(\S+?)\]/g)].map((m) => m[1]))];

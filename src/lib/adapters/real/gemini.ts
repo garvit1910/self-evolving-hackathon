@@ -32,6 +32,10 @@ export function createGeminiImageGen(): ImageGen {
               data: buf.toString('base64'),
             },
           });
+        } else {
+          console.warn(
+            `[gemini] reference image fetch failed (${imgRes.status} ${refImageUrl}) — generating without product conditioning`,
+          );
         }
       }
 

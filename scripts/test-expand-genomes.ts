@@ -80,6 +80,44 @@ for (let i = 0; i < names.length; i++) {
   }
 }
 
+// --- axis coverage (Finding 2, final review) ----------------------------
+// Ideally every multi-valued axis contributes >= min(axisLength, 3) distinct
+// values across n=8. Measured on the real fixture (La=4, Lp=3, Lh=2, Ls=4,
+// total=96): angle 4/4, persona 3/3, hook 2/2 all clear that bar — but style,
+// the HIGHEST-order digit in the mixed-radix walk, only reaches 2/4. n=8
+// walks just 8 of the 96 points on the number line, and high-order digits
+// advance slowest, so this is expected, not a regression. This is documented
+// and NOT fixed here (see expandGenomes.ts header "KNOWN LIMITATION"); do
+// not silently relax `style`'s bound further, and do not raise it to
+// min(axisLength,3) without actually fixing the sampling depth, or this
+// assertion will start lying about what the code guarantees.
+function localDedupe(values: (string | undefined)[]): string[] {
+  return [...new Set(values.filter((v): v is string => !!v && v.trim().length > 0))];
+}
+const angleAxisLen = localDedupe([brief.angle, ...DEFAULT_ANGLES]).length;
+const styleAxisLen = localDedupe([brief.style, ...DEFAULT_STYLES]).length;
+const personaAxisLen = localDedupe([brief.persona, ...personas.map((p) => p.name)]).length;
+const hookAxisLen = localDedupe(brief.hooks.length ? brief.hooks : [brief.coreMessage]).length;
+
+// Lock in the fixture's axis pool sizes so the numbers quoted above (and the
+// weakened `style` bound below) can't go silently stale if the fixture or
+// DEFAULT_STYLES/DEFAULT_ANGLES vocabulary ever changes.
+assert.equal(styleAxisLen, 4, 'style axis pool size drifted — re-measure the Finding 2 numbers above');
+
+const expectedMinDistinct: Record<string, number> = {
+  angle: Math.min(angleAxisLen, 3),
+  persona: Math.min(personaAxisLen, 3),
+  hook: Math.min(hookAxisLen, 3),
+  style: 2, // measured ceiling at n=8 for a 4-value axis — see comment above, NOT min(styleAxisLen, 3)
+};
+for (const dim of Object.keys(expectedMinDistinct)) {
+  const got = new Set(axes[dim]).size;
+  assert.ok(
+    got >= expectedMinDistinct[dim],
+    `${dim} axis coverage regressed: expected >= ${expectedMinDistinct[dim]} distinct values at n=8, got ${got}`,
+  );
+}
+
 // --- determinism --------------------------------------------------------
 assert.equal(
   JSON.stringify(expandGenomes(brief, personas, 8)),
@@ -129,5 +167,9 @@ for (let i = 0; i < fourHookNames.length; i++) {
 const single = expandGenomes({ ...brief, hooks: ['only hook'] }, [personas[0]], 8);
 assert.ok(single.length >= 1 && single.length <= 8);
 assert.ok(single.every((g) => g.hook === 'only hook'));
+
+// --- empty axis returns [] instead of undefined-filled genomes (Finding 5) --
+const emptyHooks = expandGenomes({ ...brief, hooks: ['  ', ''] }, [], 8);
+assert.deepEqual(emptyHooks, [], 'an empty axis (all-whitespace hooks) must yield no genomes, not undefined fields');
 
 console.log('✅ EXPAND GENOMES OK — 8 distinct, decorrelated, deterministic, gen-2 narrows.');

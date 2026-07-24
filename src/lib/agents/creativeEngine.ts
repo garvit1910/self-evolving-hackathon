@@ -28,6 +28,16 @@ export type CreativeRunResult = {
   runId: string;
   room: string;
   brief: Brief;
+  /**
+   * Populated regardless of `governance.ok` — this array is NOT gated on the
+   * governance decision below (only the persistence call `store.saveRun` is).
+   * Consumers MUST check `governance.ok` before publishing/displaying these
+   * creatives as live; a denied run still returns its (unpersisted)
+   * creatives here so the caller can inspect why. `Creative.status` is
+   * frozen to `'live' | 'retired'` (src/lib/contracts/index.ts) — do not
+   * invent a third status to encode "denied"; the governance field is the
+   * signal.
+   */
   creatives: Creative[];
   dropped: Violation[];
   governance: { ok: boolean; reason?: string };
