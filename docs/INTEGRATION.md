@@ -89,14 +89,32 @@ curl -s 'http://localhost:3002/api/brands/brand-magicspoon-com/events?since=0'
 ```
 
 ### POST /api/brands/:id/generate — generate a creative batch
-Body: `{generation: 1|2, priors?: {angle,persona,hook,style}, count?: 4-6,
-runId?}`. Returns `{creatives, briefs, panelScores, mode: {copy, image}}`.
-`priors.angle` is inserted into briefs VERBATIM (attribution key).
-*(Full docs land with the generate route.)*
+Body: `{generation: 1|2, priors?: {angle,persona,hook,style}, count?, runId?}`.
+`count` clamps to 4–6 (default 6 for gen-1, 4 for gen-2). `priors.angle` is
+inserted into briefs VERBATIM (attribution key). Pipeline: facts → deterministic
+briefs → copy via LLM (mock fallback) → images via gpt-image edits with the
+uploaded product photo (per-candidate SVG fallback, ≤6 real images/call) →
+persisted creatives (genome stamped, arm {α:1,β:1,pulls:0}) → panel scores.
+Returns `{creatives, briefs, panelScores, mode: {copy: 'live'|'mock', image:
+'openai'|'svg'|'mixed'}}`. Briefs carry contextVersion/contextHash + priorSource
+('sampled' | 'competitive_fact' | 'default_rotation') provenance.
+
+```bash
+curl -s -X POST http://localhost:3002/api/brands/brand-magicspoon-com/generate \
+  -H 'content-type: application/json' \
+  -d '{"generation":1,"count":4}'
+```
 
 ### POST /api/panel — persona panel scores
-Body: `{brandId}`. Returns `{scores: PanelScore[], mode: 'live'|'mock'}`.
-*(Full docs land with the panel route.)*
+Body: `{brandId, creativeIds?}`. Scores every persona (from persona-section
+facts) × creative pair 0–100 with a one-line reason; persists them. Returns
+`{scores: PanelScore[], mode: 'live'|'mock'}` — 'mock' is the deterministic
+hash+affinity fallback.
+
+```bash
+curl -s -X POST http://localhost:3002/api/panel \
+  -H 'content-type: application/json' -d '{"brandId":"brand-magicspoon-com"}'
+```
 
 ### POST /api/learnings/:id/ingested — mark Senso write-back done
 Body: `{brandId?}` (scans all brands when omitted). Sets `sensoIngested: true`
