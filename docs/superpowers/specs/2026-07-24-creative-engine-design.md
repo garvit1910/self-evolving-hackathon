@@ -83,21 +83,37 @@ Naive round-robin (`axis[i % len]`) perfectly confounds any two axes of equal le
 downstream math can attribute performance to either. Per-dimension posteriors would be
 measuring a ghost.
 
-Each axis therefore uses a **shifted round-robin**:
+Each axis therefore uses a **shifted round-robin**, advancing on every wrap by a
+**per-dimension** shift:
 
 ```
-axis[(i + Math.floor(i / len)) % len]
+axis[(i + Math.floor(i / len) * SHIFT[dimension]) % len]
+
+SHIFT = { angle: 1, persona: 2, hook: 3, style: 3 }
 ```
+
+The shift must differ per dimension. A single shared shift is not enough: two axes of the
+same length with the same shift produce *identical* index sequences, so `angle` and `style`
+(both length 4) would remain perfectly confounded — the original bug wearing a disguise. It
+also collapses the set to 7 distinct genomes instead of 8.
+
+Index sequences for the Magic Spoon fixture (angle 4, persona 3, hook 2 after dedupe,
+style 4):
 
 ```
 i        0   1   2   3   4   5   6   7
-angle    0   1   2   3   0   1   2   3     (len 4)
-style    0   1   2   3   1   2   3   0     (len 4, shifted on wrap)
-persona  0   1   2   1   2   0   2   0     (len 3)
-hook     0   1   2   1   2   0   2   0     (len 3)
+angle    0   1   2   3   1   2   3   0     (len 4, shift 1)
+persona  0   1   2   2   0   1   1   2     (len 3, shift 2)
+hook     0   1   1   0   0   1   1   0     (len 2, shift 3)
+style    0   1   2   3   3   0   1   2     (len 4, shift 3)
 ```
 
-Every angle co-occurs with two different styles, so dimensions are separable at n = 8.
+All six axis pairs are decorrelated and all 8 genomes are distinct, verified empirically
+rather than by inspection — `scripts/test-expand-genomes.ts` asserts both properties, so a
+future change to the axis vocabulary that reintroduces confounding fails the build.
+
+A shift that is a multiple of its axis length degenerates back to a plain round-robin, so
+`pick` substitutes 1 in that case.
 
 ### Axis contents
 
