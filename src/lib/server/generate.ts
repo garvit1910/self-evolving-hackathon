@@ -1,7 +1,7 @@
 import type { Brief, Creative, PanelScore, ProviderMode } from '../contracts';
 import { getContextStore } from '../context';
 import { composeBriefs, type Priors } from '../creative/compose';
-import { SvgImageGen, generateAll, getOpenAIImageGen, type ImageRequest } from '../imagegen';
+import { SvgImageGen, generateAll, getLiveImageGen, type ImageRequest } from '../imagegen';
 import { HTTPLLMClient, getLLMConfig, pLimit } from '../llm';
 import { scorePanel } from '../panel';
 import { getStore } from '../store';
@@ -22,7 +22,7 @@ export type GenerateResult = {
   creatives: Creative[];
   briefs: Brief[];
   panelScores: PanelScore[];
-  mode: { copy: ProviderMode; image: 'openai' | 'svg' | 'mixed' };
+  mode: { copy: ProviderMode; image: 'gemini' | 'openai' | 'svg' | 'mixed' };
 };
 
 export async function generateCreatives(opts: {
@@ -97,7 +97,7 @@ export async function generateCreatives(opts: {
     variant: i,
   }));
   const images = await generateAll(requests, {
-    openai: getOpenAIImageGen(),
+    live: getLiveImageGen(),
     svg: new SvgImageGen(),
   });
 
@@ -138,7 +138,7 @@ export async function generateCreatives(opts: {
     panelScores: scores,
     mode: {
       copy: anyLiveCopy ? 'live' : 'mock',
-      image: imageModes.size > 1 ? 'mixed' : imageModes.has('openai') ? 'openai' : 'svg',
+      image: imageModes.size > 1 ? 'mixed' : (images[0]?.mode ?? 'svg'),
     },
   };
 }

@@ -22,7 +22,7 @@ export type ImageRequest = {
   variant: number;
 };
 
-export type ImageResult = { url: string; mode: 'openai' | 'svg' };
+export type ImageResult = { url: string; mode: 'gemini' | 'openai' | 'svg' };
 
 export interface ImageGen {
   generate(req: ImageRequest): Promise<ImageResult>;
@@ -190,8 +190,96 @@ export class OpenAIImageGen implements ImageGen {
   }
 }
 
-export function getOpenAIImageGen(): ImageGen | null {
-  return process.env.OPENAI_API_KEY ? new OpenAIImageGen() : null;
+// ---- Gemini (primary live provider) ----
+
+// Gemini flash image models take the product photo as inline image input and
+// return the composited ad as inline image data — same edit-with-product
+// semantics as the OpenAI path, different wire format.
+export class GeminiImageGen implements ImageGen {
+  private readonly apiKey: string;
+  private readonly model: string;
+
+  constructor(opts?: { apiKey?: string; model?: string }) {
+    this.apiKey = opts?.apiKey ?? process.env.GEMINI_API_KEY ?? '';
+    this.model = opts?.model ?? process.env.GEMINI_IMAGE_MODEL ?? 'gemini-3.1-flash-image';
+  }
+
+  async generate(req: ImageRequest): Promise<ImageResult> {
+    if (!this.apiKey) throw new Error('no GEMINI_API_KEY');
+    if (!req.productImagePath) throw new Error('no product image uploaded');
+    const ext = path.extname(req.productImagePath).toLowerCase();
+    const mime = RASTER_MIMES[ext];
+    if (!mime) throw new Error(`product image must be raster (png/jpg/webp), got ${ext}`);
+    const bytes = readFileSync(req.productImagePath);
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`,
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-goog-api-key': this.apiKey },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: buildImagePrompt(req.brief, req.brandName, req.variant) },
+                { inline_data: { mime_type: mime, data: bytes.toString('base64') } },
+              ],
+            },
+          ],
+          generationConfig: { imageConfig: { aspectRatio: '4:5' } }, // matches the UI cards
+        }),
+      },
+    );
+    if (!res.ok) {
+      const detail = await res.text().catch(() => '');
+      throw new Error(`gemini(${this.model}) HTTP ${res.status}: ${detail.slice(0, 200)}`);
+    }
+    type InlineImage = { mimeType?: string; mime_type?: string; data?: string };
+    const data = (await res.json()) as {
+      candidates?: { content?: { parts?: { inlineData?: InlineImage; inline_data?: InlineImage }[] } }[];
+    };
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    // REST responses use camelCase (inlineData); accept snake_case defensively
+    const image = parts.map((p) => p.inlineData ?? p.inline_data).find((p) => p?.data);
+    if (!image?.data) throw new Error('gemini returned no image data');
+    const outExt = (image.mimeType ?? image.mime_type ?? '').includes('jpeg') ? '.jpg' : '.png';
+    const url = getStore().saveCreativeImage(
+      req.brandId,
+      `${req.creativeId}${outExt}`,
+      Buffer.from(image.data, 'base64'),
+    );
+    return { url, mode: 'gemini' };
+  }
+}
+
+/** Tries each provider in order; first success wins. */
+export class ChainImageGen implements ImageGen {
+  constructor(private readonly providers: ImageGen[]) {}
+
+  async generate(req: ImageRequest): Promise<ImageResult> {
+    let lastError: unknown;
+    for (const provider of this.providers) {
+      try {
+        return await provider.generate(req);
+      } catch (err) {
+        lastError = err;
+      }
+    }
+    throw lastError ?? new Error('no live image providers configured');
+  }
+}
+
+/**
+ * Live provider priority: Gemini (primary) > OpenAI (backup) > none (SVG-only).
+ * A quota-blocked Gemini key fails fast (~200ms) and the chain moves on, so
+ * the demo stays on real images until Gemini billing is enabled.
+ */
+export function getLiveImageGen(): ImageGen | null {
+  const providers: ImageGen[] = [];
+  if (process.env.GEMINI_API_KEY) providers.push(new GeminiImageGen());
+  if (process.env.OPENAI_API_KEY) providers.push(new OpenAIImageGen());
+  if (providers.length === 0) return null;
+  return providers.length === 1 ? providers[0] : new ChainImageGen(providers);
 }
 
 /**
@@ -201,18 +289,18 @@ export function getOpenAIImageGen(): ImageGen | null {
  */
 export async function generateAll(
   requests: ImageRequest[],
-  deps: { openai: ImageGen | null; svg: ImageGen },
+  deps: { live: ImageGen | null; svg: ImageGen },
 ): Promise<ImageResult[]> {
   const limit = pLimit(2);
   return Promise.all(
     requests.map((req, i) =>
       limit(async () => {
-        if (deps.openai && i < MAX_REAL_IMAGES_PER_RUN) {
+        if (deps.live && i < MAX_REAL_IMAGES_PER_RUN) {
           try {
-            return await deps.openai.generate(req);
+            return await deps.live.generate(req);
           } catch {
             try {
-              return await deps.openai.generate(req);
+              return await deps.live.generate(req);
             } catch {
               // fall through to the SVG card for this candidate only
             }
