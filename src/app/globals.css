@@ -9,7 +9,7 @@
   --color-line: #242b28;
   --color-fg: #e8edea;
   --color-mut: #8a938e;
-  --color-dim: #5c645f;
+  --color-dim: #7d867f; /* keep ≥4.5:1 (WCAG AA) on ink/panel/panel2 */
   --color-accent: #2ee787;
   --color-accent-dim: #14532d;
   --color-danger: #f85149;
