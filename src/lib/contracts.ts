@@ -101,6 +101,38 @@ export type PanelScore = {
   reason: string;
 };
 
+// ADDED phase-2 (Track A: brief produced by the composer; carries context provenance
+// so every creative traces to the exact facts + context version it was built from)
+export type Brief = {
+  id: string;
+  brandId: string;
+  generation: 1 | 2;
+  // attribution keys, verbatim — same rules as Genome
+  angle: string;
+  persona: string;
+  hook: string;
+  style: string;
+  coreMessage: string;
+  cta: string;
+  sourceFactIds: string[];
+  contextVersion: number;
+  contextHash: string;
+  priorSource: 'sampled' | 'competitive_fact' | 'default_rotation';
+};
+
+// ADDED phase-2 (Track A: response shape of GET /api/brands/:id/context; the Senso
+// mirror serves this same shape)
+export type ContextSnapshot = {
+  brandId: string;
+  version: number;
+  hash: string;
+  facts: Fact[];
+};
+
+// ADDED phase-2 (Track A: 'live' = real provider call succeeded, 'mock' = the
+// deterministic offline fallback produced the result)
+export type ProviderMode = 'live' | 'mock';
+
 // Every page reads through this interface only. FixtureDataSource backs the
 // offline demo; Track A adds a DB-backed implementation without touching UI.
 export interface DataSource {
