@@ -41,7 +41,7 @@ export function ResearchFeed({ facts }: { facts: Fact[] }) {
       <div className="flex h-full min-h-[60vh] flex-col items-center justify-center gap-4">
         <p className="font-mono text-sm text-dim">swarm idle — no run in progress</p>
         <button
-          onClick={start}
+          onClick={() => start()}
           className="rounded-sm bg-accent px-5 py-2.5 font-mono text-xs font-bold uppercase tracking-[0.2em] text-ink transition-colors hover:bg-accent/85"
         >
           Unleash the swarm →
