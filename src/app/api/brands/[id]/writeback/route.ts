@@ -18,5 +18,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return Response.json({ error: 'no learnings to write back' }, { status: 400 });
   }
   const result = await getContextStore().writeBackLearnings(id, selected);
-  return Response.json(result);
+  // learningIds lets the caller flip sensoIngested via POST /api/learnings/:id/ingested
+  return Response.json({ ...result, learningIds: selected.map((l) => l.id) });
 }

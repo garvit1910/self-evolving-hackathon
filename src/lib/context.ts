@@ -1,5 +1,4 @@
 import type { Fact, Learning } from './contracts';
-import { NotImplementedError } from './errors';
 import { canonicalFactsJson, slugify } from './hash';
 import { sha256Hex16 } from './server/hash.server';
 import { getStore } from './store';
@@ -66,32 +65,129 @@ export class LocalContextStore implements ContextStore {
   }
 }
 
-// TODO(track-a): Senso context store client. The stub declares the seam only —
-// endpoint shapes are NOT guessed here; implement against real Senso docs.
+// Senso context store — REST shapes verified live by the merged adapter
+// (src/lib/adapters/real/senso.ts, commit 0b59813): base apiv2.senso.ai/api/v1,
+// auth X-API-Key, ingest POST /org/kb/raw {title,text} → {id}, search POST
+// /org/search {query,max_results} → {results:[{chunk_text,title}]}.
+//
+// Design: Senso holds the brand's compiled knowledge (sources); LocalStore
+// remains the bookkeeping mirror (facts, contextVersion, 16-hex contextHash)
+// that the UI/routes read. Every op completes locally EVEN IF the Senso call
+// fails (stage insurance — the failure is logged, never fatal); source ids
+// returned by Senso land on brand.sensoSourceIds as the write evidence.
 export class SensoContextStore implements ContextStore {
+  private readonly local = new LocalContextStore();
+  private readonly base = (process.env.SENSO_BASE_URL ?? 'https://apiv2.senso.ai/api/v1').replace(/\/$/, '');
+
   constructor(private readonly apiKey = process.env.SENSO_API_KEY) {}
 
-  async ingestFacts(): Promise<{ version: number; hash: string }> {
-    throw new NotImplementedError('TODO(track-a): SensoContextStore.ingestFacts (env SENSO_API_KEY)');
+  private headers() {
+    if (!this.apiKey) throw new Error('SENSO_API_KEY not set');
+    return { 'content-type': 'application/json', 'X-API-Key': this.apiKey };
   }
 
-  async search(): Promise<Fact[]> {
-    throw new NotImplementedError('TODO(track-a): SensoContextStore.search (env SENSO_API_KEY)');
+  private async pushSource(title: string, text: string): Promise<string> {
+    const res = await fetch(`${this.base}/org/kb/raw`, {
+      method: 'POST',
+      headers: this.headers(),
+      body: JSON.stringify({ title, text }),
+    });
+    if (!res.ok) throw new Error(`Senso ingest ${res.status}: ${await res.text()}`);
+    const j = (await res.json()) as { id: string };
+    return j.id;
   }
 
-  async writeBackLearnings(): Promise<{ version: number; hash: string; factIds: string[] }> {
-    throw new NotImplementedError(
-      'TODO(track-a): SensoContextStore.writeBackLearnings (env SENSO_API_KEY)',
-    );
+  private recordSourceId(brandId: string, sourceId: string): void {
+    const store = getStore();
+    const brand = store.getBrand(brandId);
+    if (brand && !brand.sensoSourceIds.includes(sourceId)) {
+      store.putBrand({ ...brand, sensoSourceIds: [...brand.sensoSourceIds, sourceId] });
+    }
   }
 
-  async getVersion(): Promise<{ version: number; hash: string }> {
-    throw new NotImplementedError('TODO(track-a): SensoContextStore.getVersion (env SENSO_API_KEY)');
+  private compileFacts(brandId: string, facts: Fact[]): string {
+    const lines = [`# ${brandId} — research facts`];
+    for (const f of facts) {
+      lines.push(
+        `- [${f.section}] ${f.statement}${f.sourceQuote ? ` (source: "${f.sourceQuote}" — ${f.sourceUrl ?? ''})` : ''}`,
+      );
+    }
+    return lines.join('\n');
+  }
+
+  async ingestFacts(brandId: string, facts: Fact[]): Promise<{ version: number; hash: string }> {
+    const result = await this.local.ingestFacts(brandId, facts);
+    try {
+      const sourceId = await this.pushSource(
+        `${brandId}-facts-v${result.version}`,
+        this.compileFacts(brandId, facts),
+      );
+      this.recordSourceId(brandId, sourceId);
+    } catch (err) {
+      console.warn(`[senso] ingest fell back to local only: ${(err as Error).message}`);
+    }
+    return this.local.getVersion(brandId);
+  }
+
+  /** Senso /org/search ranks the compiled KB; hits are mapped back onto the
+   *  brand's local Fact objects (normalized substring match) so downstream
+   *  consumers keep real Fact shapes. Unmatched → local vector ranking. */
+  async search(brandId: string, query: string, k: number): Promise<Fact[]> {
+    try {
+      const res = await fetch(`${this.base}/org/search`, {
+        method: 'POST',
+        headers: this.headers(),
+        body: JSON.stringify({ query, max_results: k }),
+      });
+      if (!res.ok) throw new Error(`Senso search ${res.status}: ${await res.text()}`);
+      const j = (await res.json()) as { results?: { chunk_text?: string }[] };
+      const chunks = (j.results ?? []).map((r) => (r.chunk_text ?? '').toLowerCase());
+      const facts = getStore().getFacts(brandId);
+      const ranked = facts.filter((f) =>
+        chunks.some((c) => c.includes(f.statement.toLowerCase().slice(0, 80))),
+      );
+      if (ranked.length > 0) {
+        const rest = await this.local.search(brandId, query, k);
+        const seen = new Set(ranked.map((f) => f.id));
+        return [...ranked, ...rest.filter((f) => !seen.has(f.id))].slice(0, k);
+      }
+    } catch (err) {
+      console.warn(`[senso] search fell back to local: ${(err as Error).message}`);
+    }
+    return this.local.search(brandId, query, k);
+  }
+
+  async writeBackLearnings(
+    brandId: string,
+    learnings: Learning[],
+  ): Promise<{ version: number; hash: string; factIds: string[] }> {
+    const result = await this.local.writeBackLearnings(brandId, learnings);
+    try {
+      const md = [
+        `# ${brandId} — performance learnings`,
+        ...learnings.map(
+          (l) =>
+            `- ${l.statement} (dimension ${l.stats.dimension}="${l.stats.value}", lift ${l.stats.lift}, n=${l.stats.n}, CI [${l.stats.ciLow}, ${l.stats.ciHigh}])`,
+        ),
+      ].join('\n');
+      const sourceId = await this.pushSource(`${brandId}-learnings-v${result.version}`, md);
+      this.recordSourceId(brandId, sourceId);
+    } catch (err) {
+      console.warn(`[senso] writeback fell back to local only: ${(err as Error).message}`);
+    }
+    const { version, hash } = await this.local.getVersion(brandId);
+    return { version, hash, factIds: result.factIds };
+  }
+
+  async getVersion(brandId: string): Promise<{ version: number; hash: string }> {
+    return this.local.getVersion(brandId);
   }
 }
 
-// TODO(track-a): return SensoContextStore once implemented; until then the
-// factory always falls back to the local default even when SENSO_API_KEY is set.
+// USE_REAL_SENSO=1 (+ SENSO_API_KEY) routes context through Senso; the kill
+// switch (unset/0) is the LocalContextStore — same interface, zero code change.
 export function getContextStore(): ContextStore {
+  const on = process.env.USE_REAL_SENSO === '1' || process.env.USE_REAL_SENSO === 'true';
+  if (on && process.env.SENSO_API_KEY) return new SensoContextStore();
   return new LocalContextStore();
 }

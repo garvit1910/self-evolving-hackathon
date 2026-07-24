@@ -106,11 +106,20 @@ export async function runAutopilot(brandId: string): Promise<void> {
       await emit('writeback', 'running', {
         message: 'Writing performance facts back into brand context.',
       });
-      const wb = await post<{ version: number; hash: string; factIds: string[] }>(
+      const wb = await post<{ version: number; hash: string; factIds: string[]; learningIds?: string[] }>(
         `/api/brands/${brandId}/writeback`,
         {},
       );
-      await emit('writeback', 'done', { version: wb.version, hash: wb.hash, factIds: wb.factIds });
+      // flip sensoIngested through the existing route so /learnings shows "written back"
+      for (const learningId of wb.learningIds ?? []) {
+        await post(`/api/learnings/${learningId}/ingested`, { brandId }).catch(() => {});
+      }
+      await emit('writeback', 'done', {
+        version: wb.version,
+        hash: wb.hash,
+        factIds: wb.factIds,
+        sensoIngested: (wb.learningIds ?? []).length,
+      });
 
       currentStep = 'regenerate';
       await emit('regenerate', 'running', {
