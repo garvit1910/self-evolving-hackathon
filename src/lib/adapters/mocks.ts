@@ -85,10 +85,51 @@ export function createMockContextStore(): ContextStore {
   };
 }
 
+const FACT_SECTIONS = ['positioning', 'value_prop', 'voice', 'compliance'] as const;
+
+/** Pull a short, verbatim-safe quote out of a page's own text (first substantial line). */
+function pickQuote(text: string): string {
+  const line = text.split('\n').find((l) => l.trim().length >= 20) ?? text.slice(0, 80);
+  return line.trim().slice(0, 100);
+}
+
+/** Derives facts/personas FROM the prompt content itself, so quotes always verify —
+ *  mock stays a working resting state even for content-dependent extraction, not
+ *  just a fixed canned answer. Real Fastino swaps in behind this. */
 export function createMockLLM(): LLM {
   return {
-    async extract<T>(_prompt: string, _schemaHint: string): Promise<T> {
-      // deterministic canned extraction; real Fastino swaps in behind this.
+    async extract<T>(prompt: string, schemaHint: string): Promise<T> {
+      if (schemaHint.includes('sourceQuote')) {
+        const pageRe = /^### (\S+)\n([\s\S]*?)(?=\n### |$)/gm;
+        const facts: (typeof MOCK_FACTS)[number][] = [];
+        let m: RegExpExecArray | null;
+        let i = 0;
+        while ((m = pageRe.exec(prompt))) {
+          const [, url, text] = m;
+          if (text.trim().length < 20) continue;
+          const quote = pickQuote(text);
+          facts.push({
+            id: `mock-f${++i}`,
+            brandId: 'unknown',
+            section: FACT_SECTIONS[i % FACT_SECTIONS.length],
+            statement: `Notable brand statement: "${quote}"`,
+            sourceUrl: url,
+            sourceQuote: quote,
+            confidence: 0.75,
+            origin: 'research',
+          });
+        }
+        return { facts: facts.length ? facts : MOCK_FACTS } as unknown as T;
+      }
+      if (schemaHint.includes('factIds')) {
+        const ids = [...new Set([...prompt.matchAll(/\[(\S+?)\]/g)].map((m) => m[1]))];
+        const personas = [
+          { name: 'Nostalgic Millennial', summary: 'Wants childhood comfort without the guilt.', pains: ['guilt'], desires: ['nostalgia'], objections: ['price'], factIds: ids.slice(0, 2) },
+          { name: 'Busy Professional', summary: 'Needs a fast, better-for-you option.', pains: ['no time'], desires: ['convenience'], objections: ['does it fill me up?'], factIds: ids.slice(0, 1) },
+          { name: 'Health Optimizer', summary: 'Tracks macros, skeptical of marketing claims.', pains: ['hidden sugar'], desires: ['high protein'], objections: ['is this just marketing?'], factIds: ids },
+        ];
+        return { personas } as unknown as T;
+      }
       return { facts: MOCK_FACTS } as unknown as T;
     },
     async complete(prompt: string) {
