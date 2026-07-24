@@ -1,5 +1,7 @@
-// Tells the client whether live mode is available (any LLM key present).
+import { getLLMConfig } from '@/lib/llm';
+
+// Tells the client whether live mode is available (any LLM route configured —
+// Pioneer when USE_REAL_PIONEER=1, else LLM_*/OpenAI keys).
 export async function GET() {
-  const live = Boolean(process.env.OPENAI_API_KEY || process.env.LLM_API_KEY);
-  return Response.json({ mode: live ? 'live' : 'offline' });
+  return Response.json({ mode: getLLMConfig() ? 'live' : 'offline' });
 }

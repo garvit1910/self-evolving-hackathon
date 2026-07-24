@@ -2,7 +2,7 @@
 import { createPioneerLLM } from '../src/lib/adapters/real/pioneer';
 
 async function main() {
-  console.log('base:', process.env.PIONEER_BASE_URL, 'model:', process.env.PIONEER_MODEL);
+  console.log(`base=${process.env.PIONEER_BASE_URL ? "set" : "missing"} key=${process.env.PIONEER_API_KEY ? "set" : "missing"} model=${process.env.PIONEER_MODEL ?? "(default)"}`);
   const llm = createPioneerLLM();
   const out = await llm.complete('Reply with exactly: PIONEER OK');
   console.log('completion →', JSON.stringify(out));
