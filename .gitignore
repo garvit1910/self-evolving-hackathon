@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# local server store (brands, facts, creatives, uploads)
+.data/
+
 # vercel
 .vercel
 
