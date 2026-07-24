@@ -7,7 +7,7 @@ Date: 2026-07-24
 
 Turn one `Brief` into 6–8 persisted `Creative`s whose genomes vary across
 `angle` / `persona` / `hook` / `style`, with generated copy and Gemini imagery, screened
-by a prohibited-claims gate and published behind a Guild governance check.
+by a prohibited-claims gate and published behind a governance check.
 
 Covers these PROGRESS.md Phase 2 items:
 
@@ -27,7 +27,7 @@ explicit fan-out layer between brief and creatives.
 ## Architecture
 
 New orchestrator `src/lib/agents/creativeEngine.ts`, mirroring `researchSwarm.ts`:
-adapters injected, progress posted to a Band room, Guild gates publish.
+adapters injected, progress posted to a Band room, governance gates publish.
 
 | Unit | File | Deps | Purpose |
 |---|---|---|---|
@@ -55,7 +55,7 @@ composeBrief(input) ──► brief
                     │
                     └─► renderImages(brief, survivors, imageGen, store)   concurrency 3
                               │
-                              └─► Guild.approve('creative_publish', {generated, dropped, violations})
+                              └─► governance.approve('creative_publish', {generated, dropped, violations})
                                         │
                                         └─► store.saveRun(runId, creatives[])
 ```
@@ -185,13 +185,20 @@ A creative with violations gets exactly one repair retry — copy regenerated wi
 explicit avoid-list naming the terms it hit. Still failing → dropped, with the veto posted
 to the Band feed so the block is observable rather than silent.
 
-### Guild
+### Governance
 
 `governance.approve('creative_publish', { generated, dropped, violations })` runs before
-persistence. If drops leave fewer than 4 survivors, Guild denies and the orchestrator
-surfaces the denial rather than shipping a threadbare set. This gives Guild a second
-observable block, which is the stated bar for it counting as integrated
-(`interfaces.ts`: "Real only if it can OBSERVABLY block something").
+persistence. If drops leave fewer than 4 survivors, publish is denied and the orchestrator
+surfaces the denial rather than shipping a threadbare set — a second observable block,
+mirroring the research swarm's low-confidence veto.
+
+**Updated after commit 22e7f66:** this was originally scoped as a Guild check. Guild's real
+integration model turned out to be deploying hosted TypeScript agents rather than a REST
+authorize call, so the real adapter was cut and `Governance` is now permanently the
+client-side observable-veto mock. The `Governance` interface and `adapters.governance` are
+unchanged, so nothing in this design moves; only the attribution does. The
+fewer-than-4-survivors denial lives in the orchestrator, not in the mock's policy, so the
+block holds regardless of what backs the interface.
 
 ## Persistence
 
@@ -243,7 +250,7 @@ failure, which is what actually happens here.
 | Gemini fails for all | Full set renders on placeholders; run completes. Demo degrades, never dies. |
 | `distillBannedTerms` empty or throws | Floor list still applies — gate cannot no-op. |
 | Copy response short | Missing indices fall back to `coreMessage` + hook, deterministically. |
-| Creative fails repair | Dropped, veto posted to Band. Fewer than 4 survivors → Guild denies publish. |
+| Creative fails repair | Dropped, veto posted to Band. Fewer than 4 survivors → governance denies publish. |
 | `saveImage` write fails | Falls back to inline data URL; run completes. |
 
 ## Testing

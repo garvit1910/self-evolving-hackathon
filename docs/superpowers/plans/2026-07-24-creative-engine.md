@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Turn one `Brief` into 6–8 persisted `Creative`s with distinct genomes, generated copy, Gemini imagery, a prohibited-claims gate, and a Guild publish check.
+**Goal:** Turn one `Brief` into 6–8 persisted `Creative`s with distinct genomes, generated copy, Gemini imagery, a prohibited-claims gate, and a governance publish check.
 
-**Architecture:** A new orchestrator `creativeEngine.ts` mirrors the existing `researchSwarm.ts` pattern (adapters injected, progress posted to a Band room, Guild gates publish). It composes five small units: a pure `expandGenomes` fan-out, an LLM-backed banned-term distiller, a pure compliance screener, a batched copywriter, and an image renderer. Persistence goes behind a narrow `CreativeStore` interface with a filesystem implementation, so the missing Drizzle/Supabase schema does not block this phase.
+**Architecture:** A new orchestrator `creativeEngine.ts` mirrors the existing `researchSwarm.ts` pattern (adapters injected, progress posted to a Band room, governance gates publish). It composes five small units: a pure `expandGenomes` fan-out, an LLM-backed banned-term distiller, a pure compliance screener, a batched copywriter, and an image renderer. Persistence goes behind a narrow `CreativeStore` interface with a filesystem implementation, so the missing Drizzle/Supabase schema does not block this phase.
 
 **Tech Stack:** TypeScript, Next.js 16, `tsx` for scripts, `node:assert/strict` for assertions. No test runner and no new npm dependencies.
 
@@ -33,7 +33,7 @@
 | `src/lib/agents/imagesmith.ts` | Create | Genome → image prompt → Gemini → persisted image URL |
 | `src/lib/adapters/real/gemini.ts` | Modify | Implement reference-image conditioning (existing TODO) |
 | `src/lib/adapters/mocks.ts` | Modify | Point fallback images at files that actually exist |
-| `src/lib/agents/creativeEngine.ts` | Create | Orchestrator: wires all of the above, Band feed, Guild gate |
+| `src/lib/agents/creativeEngine.ts` | Create | Orchestrator: wires all of the above, Band feed, governance gate |
 | `public/fixtures/ad-{1..4}.svg` | Create | Placeholder creative images for mock mode |
 | `scripts/test-expand-genomes.ts` | Create | Unit test for the fan-out |
 | `scripts/test-compliance-gate.ts` | Create | Unit test for screening + floor list |
@@ -1175,7 +1175,7 @@ Create `scripts/test-creative-engine.ts`:
  * Run: npx tsx scripts/test-creative-engine.ts
  *
  * Uses getAdapters() — respects USE_REAL_* flags, so it is mock-safe by default
- * and upgrades to live Pioneer/Gemini/Band/Guild as keys land.
+ * and upgrades to live Pioneer/Gemini/Band as keys land.
  */
 import assert from 'node:assert/strict';
 import { existsSync } from 'node:fs';
@@ -1279,9 +1279,10 @@ Create `src/lib/agents/creativeEngine.ts`:
  * Ordering is deliberate: copy is screened BEFORE images, so no Gemini quota is
  * spent on a creative that is about to be dropped.
  *
- * Guild gates publish. If drops leave too few survivors the run is denied rather
- * than shipping a threadbare set — a second OBSERVABLE block, which is the bar
- * for Guild counting as integrated.
+ * Governance gates publish. If drops leave too few survivors the run is denied
+ * rather than shipping a threadbare set — a second OBSERVABLE block, mirroring
+ * the research swarm's low-confidence veto. (Guild was cut in 22e7f66; this is
+ * the client-side governance mock, which is now its permanent form.)
  */
 
 import type { Brand, Brief, Creative, Genome, Persona, Prior } from '@/lib/contracts';
@@ -1354,7 +1355,7 @@ export async function runCreativeEngine(
   const droppedIndices = new Set(dropped.map((v) => v.index));
   for (const v of dropped) {
     await feed.post(room, {
-      agent: 'guild',
+      agent: 'governance',
       kind: 'error',
       payload: { action: 'creative_drop', index: v.index, terms: v.terms, reason: 'prohibited claim survived repair' },
     });
@@ -1387,7 +1388,7 @@ export async function runCreativeEngine(
     arm: { alpha: 1, beta: 1, pulls: 0 },
   }));
 
-  // --- Guild gate -------------------------------------------------------
+  // --- governance gate -------------------------------------------------------
   let gov = await governance.approve('creative_publish', {
     generated: creatives.length,
     dropped: dropped.length,
@@ -1398,7 +1399,7 @@ export async function runCreativeEngine(
   }
 
   await feed.post(room, {
-    agent: 'guild',
+    agent: 'governance',
     kind: gov.ok ? 'tool_result' : 'error',
     payload: { action: 'creative_publish', ...gov },
   });
@@ -1465,7 +1466,7 @@ Add to `## Open blockers`:
 
 ```bash
 git add src/lib/agents/creativeEngine.ts src/lib/agents/imagesmith.ts scripts/test-creative-engine.ts package.json PROGRESS.md
-git commit -m "feat: add creative engine orchestrator with Guild publish gate"
+git commit -m "feat: add creative engine orchestrator with governance publish gate"
 ```
 
 Note: `PROGRESS.md` is listed in `.gitignore` as local-only, so the `git add` above will no-op for it unless forced. That is expected — update the file for local tracking, do not force-add it.
