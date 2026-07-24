@@ -136,4 +136,8 @@ creatives (`/api/files/creatives/<brandId>/<file>`).
 - `POST /api/brands/:id/metrics` `DailyMetrics[]` → live-sim persistence
 - `POST /api/brands/:id/learnings` `Learning[]` → upsert
 - `POST /api/brands/:id/writeback` `{learningIds?}` → learnings → performance_loop facts, `{version, hash, factIds}`
-- `POST /api/brands/:id/research` `{}` → run interim researcher *(lands with Workstream D)*
+- `POST /api/brands/:id/research` `{}` → runs the interim researcher (homepage + ≤2
+  same-origin pages → one LLM extraction → mechanical sourceQuote verification,
+  fabricated quotes dropped) → `{factCount, droppedQuotes, mode: 'live'|'fallback'}`.
+  **TODO(track-a): the swarm replaces this** by POSTing `/facts` + `/events` directly —
+  when facts already exist, Autopilot skips this route automatically.
