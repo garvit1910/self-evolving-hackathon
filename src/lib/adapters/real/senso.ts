@@ -29,6 +29,7 @@ export function createSensoContextStore(): ContextStore {
           headers: headers(),
           body: JSON.stringify({ title: s.title, text: s.text }),
         });
+        if (res.status === 409) continue; // duplicate content — already in the org KB, non-fatal
         if (!res.ok) throw new Error(`Senso ingest ${res.status}: ${await res.text()}`);
         const j = (await res.json()) as { id: string };
         ids.push(j.id);

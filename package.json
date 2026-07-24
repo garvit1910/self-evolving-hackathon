@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "gen:fixtures": "tsx scripts/gen-fixtures.ts",
+    "swarm": "tsx --env-file=.env.local src/agents/swarm.ts",
     "freeze": "tsx scripts/freeze.ts",
     "smoke": "tsx scripts/smoke.ts",
     "test:genomes": "tsx scripts/test-expand-genomes.ts",

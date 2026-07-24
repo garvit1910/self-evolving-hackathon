@@ -80,7 +80,7 @@ export async function analyzeBrand(
     }
 
     n += 1;
-    grounded.push({
+    const fact: Fact = {
       id: `f${n}`,
       brandId,
       section: f.section as FactSection,
@@ -89,6 +89,19 @@ export async function analyzeBrand(
       sourceQuote: quote,
       confidence: Math.max(0, Math.min(1, f.confidence ?? 0.7)),
       origin: 'research',
+    };
+    grounded.push(fact);
+    // each verified fact is posted to the room as it lands — the live feed beat
+    await feed.post(room, {
+      agent: 'analyst',
+      kind: 'tool_result',
+      payload: {
+        factId: fact.id,
+        section: fact.section,
+        statement: fact.statement,
+        sourceQuote: quote,
+        sourceUrl: fact.sourceUrl,
+      },
     });
   }
 

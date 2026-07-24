@@ -53,11 +53,14 @@ export async function generatePersonas(
     factIds: (p.factIds ?? []).filter((id) => validIds.has(id)),
   }));
 
-  await feed.post(room, {
-    agent: 'personasmith',
-    kind: 'tool_result',
-    payload: { personas: personas.map((p) => ({ name: p.name, factIds: p.factIds })) },
-  });
+  // each persona is posted to the room as it lands — the live feed beat
+  for (const p of personas) {
+    await feed.post(room, {
+      agent: 'personasmith',
+      kind: 'tool_result',
+      payload: { persona: p.name, summary: p.summary, factIds: p.factIds },
+    });
+  }
 
   return personas;
 }

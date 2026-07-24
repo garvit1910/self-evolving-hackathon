@@ -18,6 +18,10 @@
  *
  * NOTE: `room` here is the Band chat id (UUID). Set BAND_API_KEY, BAND_REST_URL.
  * Falls back to mock on any error (see withFallback in adapters/index).
+ *
+ * Event body shape CONFIRMED LIVE against the API validator (201 Created):
+ *   { event: { message_type: string, content: string } }
+ * → { data: { id, success, message_type } }
  */
 
 import type { Feed } from '../interfaces';
@@ -46,14 +50,12 @@ export function createBandFeed(): Feed {
     },
     async post(room, event): Promise<void> {
       const { url, key } = base();
+      // event kinds: "thought" | "tool_call" | "tool_result" | "error"
+      const content = `[${event.agent}] ${JSON.stringify(event.payload)}`;
       const res = await fetch(`${url}/chats/${encodeURIComponent(room)}/events`, {
         method: 'POST',
         headers: headers(key),
-        // event kinds: "thought" | "tool_call" | "tool_result" | "error"
-        body: JSON.stringify({
-          event_type: event.kind,
-          data: { agent: event.agent, payload: event.payload },
-        }),
+        body: JSON.stringify({ event: { message_type: event.kind, content } }),
       });
       if (!res.ok) throw new Error(`Band post ${res.status}: ${await res.text()}`);
     },
