@@ -4,8 +4,10 @@ import {
   readFileSync,
   readdirSync,
   renameSync,
+  rmSync,
   writeFileSync,
 } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import type {
   AutopilotEvent,
@@ -214,12 +216,30 @@ export class LocalStore {
 
   // ---- binary files (uploads + generated creatives) ----
 
-  /** Stores the uploaded product image; returns its served URL. */
+  /** Stores the uploaded product image; returns its served URL. Browsers hand
+   *  over AVIF/HEIC with misleading extensions, and the image providers
+   *  (OpenAI /images/edits, Gemini inline_data) only take PNG/JPEG/WebP — so
+   *  sniff magic bytes and transcode via `sips` (macOS) when available. */
   saveUpload(brandId: string, filename: string, bytes: Buffer): string {
     const safe = path.basename(filename);
     const file = path.join(this.root, 'uploads', brandId, safe);
     mkdirSync(path.dirname(file), { recursive: true });
     writeFileSync(file, bytes);
+
+    const isPng = bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8;
+    const isWebp = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
+    if (!isPng && !isJpeg && !isWebp) {
+      try {
+        const png = file.replace(/\.[^.]+$/, '') + '.png';
+        execFileSync('sips', ['-s', 'format', 'png', file, '--out', png], { stdio: 'ignore' });
+        if (png !== file) rmSync(file);
+        const pngName = path.basename(png);
+        return `/api/files/uploads/${brandId}/${pngName}`;
+      } catch {
+        console.warn(`[store] product image is not PNG/JPEG/WebP and transcode failed — live image edits may reject it`);
+      }
+    }
     return `/api/files/uploads/${brandId}/${safe}`;
   }
 
