@@ -1,4 +1,4 @@
-import { dataSource } from '@/lib/datasource';
+import { getDataSource } from '@/lib/datasource.server';
 import type { Creative, PanelScore } from '@/lib/contracts';
 
 function GenomeChip({ label, accent = false }: { label: string; accent?: boolean }) {
@@ -69,6 +69,7 @@ function CreativeCard({ creative, scores }: { creative: Creative; scores: PanelS
 }
 
 export default async function StudioPage() {
+  const dataSource = await getDataSource();
   const [creatives, panelScores] = await Promise.all([
     dataSource.getCreatives(),
     dataSource.getPanelScores(),

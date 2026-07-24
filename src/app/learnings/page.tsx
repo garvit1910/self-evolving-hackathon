@@ -1,7 +1,8 @@
-import { dataSource } from '@/lib/datasource';
+import { getDataSource } from '@/lib/datasource.server';
 import { fmtInt, fmtLift } from '@/lib/format';
 
 export default async function LearningsPage() {
+  const dataSource = await getDataSource();
   const learnings = await dataSource.getLearnings();
   return (
     <div className="mx-auto max-w-3xl p-6">

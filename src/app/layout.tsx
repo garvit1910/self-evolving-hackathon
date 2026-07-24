@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { dataSource } from '@/lib/datasource';
+import { getDataSource } from '@/lib/datasource.server';
 import { AutopilotProvider } from '@/components/autopilot/provider';
 import { AutopilotStepper } from '@/components/autopilot/stepper';
 import { Nav } from '@/components/shell/nav';
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const dataSource = await getDataSource();
   const brand = await dataSource.getBrand();
   return (
     <html lang="en" className="h-full antialiased">
