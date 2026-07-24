@@ -96,8 +96,8 @@ describe('generateAll fallback + cap', () => {
     );
     expect(results.every((r) => r.mode === 'svg')).toBe(true);
     expect(results.every((r) => r.url.endsWith('.svg'))).toBe(true);
-    // one retry per candidate → exactly 2 calls each
-    expect(fetchMock).toHaveBeenCalledTimes(4);
+    // per candidate: (primary + mini-downgrade) × (attempt + one retry) = 4 calls
+    expect(fetchMock).toHaveBeenCalledTimes(8);
     expect(existsSync(path.join(dataDir, 'creatives', 'brand-x', 'r1-c1.svg'))).toBe(true);
   });
 

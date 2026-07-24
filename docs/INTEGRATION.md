@@ -15,7 +15,8 @@ Base URL (dev): `http://localhost:3002`
 | `LLM_BASE_URL` | `https://api.openai.com/v1` | **Pioneer plug point** — repoint at the gateway, nothing else changes |
 | `LLM_API_KEY` | falls back to `OPENAI_API_KEY` | Gateway auth |
 | `LLM_MODEL` | `gpt-4o-mini` | Copy / panel / research model |
-| `IMAGE_QUALITY` | `low` | gpt-image-1 quality (low/medium/high) |
+| `IMAGE_QUALITY` | `low` | gpt-image quality (low/medium/high) |
+| `IMAGE_MODEL` | `gpt-image-1` | Image model; auto-downgrades to `gpt-image-1-mini` when the org lacks access (rate limit 0 = unverified org) |
 | `SENSO_API_KEY` | — | Declared by `SensoContextStore` stub (TODO(track-a)) |
 | `ACTIAN_URL` | — | Declared by `ActianVectorStore` stub (TODO(track-a)) |
 | `DATA_DIR` | `<cwd>/.data` | Server store root override (tests) |

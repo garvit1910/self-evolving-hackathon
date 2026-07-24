@@ -123,13 +123,19 @@ export function buildImagePrompt(brief: Brief, brandName: string, variant: numbe
   ].join(' ');
 }
 
+// Orgs without gpt-image-1 verification (rate limit 0) usually still have the
+// mini tier — verified against this org's key on 2026-07-24.
+const FALLBACK_IMAGE_MODEL = 'gpt-image-1-mini';
+
 export class OpenAIImageGen implements ImageGen {
   private readonly apiKey: string;
   private readonly quality: string;
+  private readonly model: string;
 
-  constructor(opts?: { apiKey?: string; quality?: string }) {
+  constructor(opts?: { apiKey?: string; quality?: string; model?: string }) {
     this.apiKey = opts?.apiKey ?? process.env.OPENAI_API_KEY ?? '';
     this.quality = opts?.quality ?? process.env.IMAGE_QUALITY ?? 'low';
+    this.model = opts?.model ?? process.env.IMAGE_MODEL ?? 'gpt-image-1';
   }
 
   async generate(req: ImageRequest): Promise<ImageResult> {
@@ -137,13 +143,27 @@ export class OpenAIImageGen implements ImageGen {
     if (!req.productImagePath) throw new Error('no product image uploaded');
     const ext = path.extname(req.productImagePath).toLowerCase();
     const mime = RASTER_MIMES[ext];
-    // gpt-image-1 /images/edits rejects SVG input — the fixture product image
-    // is an SVG, so the fixture brand always lands on the SVG fallback.
+    // /images/edits rejects SVG input — the fixture product image is an SVG,
+    // so the fixture brand always lands on the SVG fallback.
     if (!mime) throw new Error(`product image must be raster (png/jpg/webp), got ${ext}`);
 
-    const bytes = readFileSync(req.productImagePath);
+    try {
+      return await this.edit(req, mime, ext, this.model);
+    } catch (err) {
+      if (this.model === FALLBACK_IMAGE_MODEL) throw err;
+      return this.edit(req, mime, ext, FALLBACK_IMAGE_MODEL);
+    }
+  }
+
+  private async edit(
+    req: ImageRequest,
+    mime: string,
+    ext: string,
+    model: string,
+  ): Promise<ImageResult> {
+    const bytes = readFileSync(req.productImagePath as string);
     const form = new FormData();
-    form.append('model', 'gpt-image-1');
+    form.append('model', model);
     form.append('image', new Blob([new Uint8Array(bytes)], { type: mime }), `product${ext}`);
     form.append('prompt', buildImagePrompt(req.brief, req.brandName, req.variant));
     form.append('size', '1024x1536'); // closest supported size to the UI's 4:5 cards
@@ -156,7 +176,7 @@ export class OpenAIImageGen implements ImageGen {
     });
     if (!res.ok) {
       const detail = await res.text().catch(() => '');
-      throw new Error(`images/edits HTTP ${res.status}: ${detail.slice(0, 200)}`);
+      throw new Error(`images/edits(${model}) HTTP ${res.status}: ${detail.slice(0, 200)}`);
     }
     const data = (await res.json()) as { data?: { b64_json?: string }[] };
     const b64 = data.data?.[0]?.b64_json;
