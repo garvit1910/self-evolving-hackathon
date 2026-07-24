@@ -41,6 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 # hackathon additions
+# generated run metadata (images under public/runs/ ARE committed for the golden run)
+.runs/
 tapes/
 !.env.local.example
 
