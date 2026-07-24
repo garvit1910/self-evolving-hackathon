@@ -1,0 +1,20 @@
+{
+  "id": "magic-spoon-run1-brief-g1",
+  "brandId": "magic-spoon",
+  "contextHash": "ctx_b4489a21",
+  "generation": 1,
+  "angle": "Comparison",
+  "persona": "Nostalgic Millennial",
+  "coreMessage": "Tastes like the sugary cereal you grew up with, without the sugar crash.",
+  "hooks": [
+    "Playful, nostalgic, cheeky challenger-brand tone.",
+    "High-protein, low-sugar childhood cereal for health-conscious adults.",
+    "High-protein, low-sugar childhood cereal for health-conscious adults."
+  ],
+  "cta": "Try it today",
+  "style": "lifestyle",
+  "compliance": [
+    "Avoid absolute health claims; \"keto-friendly\" allowed, \"cures\" is not."
+  ],
+  "priorProvenance": []
+}

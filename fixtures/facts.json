@@ -1,0 +1,40 @@
+[
+  {
+    "id": "f1",
+    "brandId": "magic-spoon",
+    "section": "positioning",
+    "statement": "High-protein, low-sugar childhood cereal for health-conscious adults.",
+    "sourceUrl": "https://magicspoon.com",
+    "sourceQuote": "Cereal reimagined: 0g sugar, 13g protein.",
+    "confidence": 0.92,
+    "origin": "research"
+  },
+  {
+    "id": "f2",
+    "brandId": "magic-spoon",
+    "section": "value_prop",
+    "statement": "Tastes like the sugary cereal you grew up with, without the sugar crash.",
+    "sourceUrl": "https://magicspoon.com",
+    "sourceQuote": "All the taste, none of the guilt.",
+    "confidence": 0.88,
+    "origin": "research"
+  },
+  {
+    "id": "f3",
+    "brandId": "magic-spoon",
+    "section": "voice",
+    "statement": "Playful, nostalgic, cheeky challenger-brand tone.",
+    "sourceUrl": "https://magicspoon.com",
+    "sourceQuote": "Bring back Saturday mornings.",
+    "confidence": 0.8,
+    "origin": "research"
+  },
+  {
+    "id": "f4",
+    "brandId": "magic-spoon",
+    "section": "compliance",
+    "statement": "Avoid absolute health claims; \"keto-friendly\" allowed, \"cures\" is not.",
+    "confidence": 0.75,
+    "origin": "research"
+  }
+]

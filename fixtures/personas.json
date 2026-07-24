@@ -1,0 +1,25 @@
+[
+  {
+    "id": "p1",
+    "brandId": "magic-spoon",
+    "name": "Nostalgic Millennial",
+    "summary": "Wants childhood cereal without the sugar guilt.",
+    "pains": [
+      "sugar crashes",
+      "guilt"
+    ],
+    "desires": [
+      "nostalgia",
+      "protein"
+    ],
+    "objections": [
+      "price",
+      "does it actually taste good?"
+    ],
+    "factIds": [
+      "f1",
+      "f2",
+      "f3"
+    ]
+  }
+]
