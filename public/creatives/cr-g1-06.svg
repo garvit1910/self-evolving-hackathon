@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750" viewBox="0 0 600 750">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a3018"/>
+      <stop offset="0.55" stop-color="#0c0e0d"/>
+      <stop offset="1" stop-color="#08090a"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="750" fill="url(#g)"/>
+  <rect x="22" y="22" width="556" height="706" fill="none" stroke="#34d399" stroke-opacity="0.4" stroke-width="2"/>
+  <line x1="48" y1="120" x2="552" y2="120" stroke="#34d399" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="48" y="88" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" letter-spacing="6" fill="#34d399">MAGIC SPOON</text>
+  <text x="48" y="180" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="3" fill="#8a938e">ANGLE</text>
+  <text x="48" y="300" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="48" font-weight="700" letter-spacing="2" fill="#f2f5f3">MACRO</text>
+  <text x="48" y="358" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="48" font-weight="700" letter-spacing="2" fill="#f2f5f3">MATH</text>
+  <text x="48" y="446" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" letter-spacing="3" fill="#8a938e">STYLE · RETRO-CARTOON</text>
+  <text x="48" y="620" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="24" fill="#34d399">“Macros that fit in a cereal bowl.”</text>
+  <line x1="48" y1="660" x2="552" y2="660" stroke="#34d399" stroke-opacity="0.5" stroke-width="1"/>
+  <text x="48" y="698" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="16" fill="#6b736e">cr-g1-06 · GEN 1 · 600×750 PLACEHOLDER</text>
+</svg>
