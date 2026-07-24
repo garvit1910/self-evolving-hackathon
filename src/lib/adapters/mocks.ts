@@ -185,10 +185,10 @@ export function createMockGovernance(): Governance {
 }
 
 const FALLBACK_IMAGES = [
-  '/fixtures/ad-1.png',
-  '/fixtures/ad-2.png',
-  '/fixtures/ad-3.png',
-  '/fixtures/ad-4.png',
+  '/fixtures/ad-1.svg',
+  '/fixtures/ad-2.svg',
+  '/fixtures/ad-3.svg',
+  '/fixtures/ad-4.svg',
 ];
 
 export function createMockImageGen(): ImageGen {
