@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { NotImplementedError } from './errors';
+
 import { fnv1a } from './hash';
 
 // Actian seam. MemoryVectorStore is the working local default: OpenAI
@@ -149,32 +149,72 @@ export class MemoryVectorStore implements VectorStore {
   }
 }
 
-// TODO(track-a): Actian vector store client. The stub declares the seam only —
-// endpoint shapes are NOT guessed here; implement against real Actian docs.
+// Actian VectorAI DB client — wire shapes per the merged Track A adapter
+// (src/lib/adapters/real/actian.ts): POST {ACTIAN_URL}/vectors/upsert
+// {items:[{id,text}]} (text-in, Actian embeds) and POST /vectors/search
+// {query,k} → {matches:[{id,text,score}]}. The adapter marks these routes as
+// unverified against a live CE instance — no local VectorAI DB was reachable
+// this session (smoke-actian.ts records the probe), so every failure falls
+// back to the MemoryVectorStore mirror and the demo never blocks on Docker.
 export class ActianVectorStore implements VectorStore {
-  constructor(private readonly url = process.env.ACTIAN_URL) {}
+  private readonly base: string;
 
-  async upsert(_chunks: Chunk[]): Promise<void> {
-    throw new NotImplementedError('TODO(track-a): ActianVectorStore.upsert (env ACTIAN_URL)');
+  constructor(
+    private readonly mirror: MemoryVectorStore,
+    url = process.env.ACTIAN_URL,
+  ) {
+    if (!url) throw new Error('ACTIAN_URL not set');
+    this.base = url.replace(/\/$/, '');
   }
 
-  async query(_text: string, _k: number): Promise<ScoredChunk[]> {
-    throw new NotImplementedError('TODO(track-a): ActianVectorStore.query (env ACTIAN_URL)');
+  async upsert(chunks: Chunk[]): Promise<void> {
+    await this.mirror.upsert(chunks); // mirror first — fallback stays complete
+    try {
+      const res = await fetch(`${this.base}/vectors/upsert`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ items: chunks.map((c) => ({ id: c.id, text: c.text })) }),
+      });
+      if (!res.ok) throw new Error(`Actian upsert ${res.status}`);
+    } catch (err) {
+      console.warn(`[actian] upsert fell back to memory store: ${(err as Error).message}`);
+    }
+  }
+
+  async query(text: string, k: number): Promise<ScoredChunk[]> {
+    try {
+      const res = await fetch(`${this.base}/vectors/search`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ query: text, k }),
+      });
+      if (!res.ok) throw new Error(`Actian search ${res.status}`);
+      const j = (await res.json()) as { matches?: { id: string; text: string; score: number }[] };
+      if (Array.isArray(j.matches)) return j.matches.slice(0, k);
+      throw new Error('Actian search returned no matches array');
+    } catch (err) {
+      console.warn(`[actian] query fell back to memory store: ${(err as Error).message}`);
+      return this.mirror.query(text, k);
+    }
   }
 }
 
 // One store per namespace (we namespace by brandId), cached across HMR.
-// TODO(track-a): return ActianVectorStore once implemented; until then the
-// factory always falls back to the local default even when ACTIAN_URL is set.
+// USE_REAL_ACTIAN=1 + ACTIAN_URL routes retrieval through Actian (memory store
+// stays the mirror + fallback); kill switch unset/0 → MemoryVectorStore only.
 export function getVectorStore(namespace: string): VectorStore {
-  const g = globalThis as typeof globalThis & { __swarmadsVectors?: Map<string, MemoryVectorStore> };
+  const g = globalThis as typeof globalThis & { __swarmadsVectors?: Map<string, VectorStore> };
   g.__swarmadsVectors ??= new Map();
   // key includes the data root so tests that repoint DATA_DIR get fresh stores
   const root = process.env.DATA_DIR ?? path.join(process.cwd(), '.data');
-  const key = `${root}:${namespace}`;
+  const actianOn =
+    (process.env.USE_REAL_ACTIAN === '1' || process.env.USE_REAL_ACTIAN === 'true') &&
+    Boolean(process.env.ACTIAN_URL);
+  const key = `${root}:${namespace}:${actianOn ? 'actian' : 'memory'}`;
   let store = g.__swarmadsVectors.get(key);
   if (!store) {
-    store = new MemoryVectorStore(namespace);
+    const memory = new MemoryVectorStore(namespace);
+    store = actianOn ? new ActianVectorStore(memory) : memory;
     g.__swarmadsVectors.set(key, store);
   }
   return store;
