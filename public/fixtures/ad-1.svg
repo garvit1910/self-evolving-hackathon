@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Placeholder creative 1">
+  <rect width="512" height="512" fill="#1f2937"/>
+  <rect x="24" y="24" width="464" height="464" fill="none" stroke="#4b5563" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="256" y="248" font-family="system-ui, sans-serif" font-size="28" fill="#9ca3af" text-anchor="middle">placeholder creative</text>
+  <text x="256" y="288" font-family="system-ui, sans-serif" font-size="72" font-weight="700" fill="#e5e7eb" text-anchor="middle">1</text>
+</svg>

@@ -2,13 +2,20 @@
   "name": "self-evolving-hackathon",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "gen:fixtures": "tsx scripts/gen-fixtures.ts"
+    "lint": "eslint",
+    "gen:fixtures": "tsx scripts/gen-fixtures.ts",
+    "freeze": "tsx scripts/freeze.ts",
+    "smoke": "tsx scripts/smoke.ts",
+    "test:genomes": "tsx scripts/test-expand-genomes.ts",
+    "test:compliance": "tsx scripts/test-compliance-gate.ts",
+    "test:creative": "tsx scripts/test-creative-engine.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",
@@ -22,6 +29,8 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.11",
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
     "typescript": "^5",

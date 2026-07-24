@@ -1,0 +1,11 @@
+{
+  "id": "magic-spoon",
+  "url": "https://magicspoon.com",
+  "name": "Magic Spoon",
+  "productImageUrl": "/fixtures/product.png",
+  "contextVersion": 1,
+  "contextHash": "ctx_b4489a21",
+  "sensoSourceIds": [
+    "senso-src-1"
+  ]
+}
