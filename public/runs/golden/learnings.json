@@ -1,0 +1,16 @@
+[
+  {
+    "id": "learning-style-clean-clinical",
+    "brandId": "brand-magicspoon-com",
+    "statement": "style 'clean-clinical' outperforms: 1.42× CTR (n=81239 impressions, 95% CI [0.0210,0.0231]); ROAS 6.02",
+    "stats": {
+      "dimension": "style",
+      "value": "clean-clinical",
+      "lift": 1.422235201847806,
+      "n": 81239,
+      "ciLow": 0.02103465205510116,
+      "ciHigh": 0.023053436562419576
+    },
+    "sensoIngested": true
+  }
+]

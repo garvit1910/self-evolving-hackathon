@@ -1,0 +1,218 @@
+[
+  {
+    "id": "g1r1-b1",
+    "brandId": "brand-magicspoon-com",
+    "generation": 1,
+    "angle": "the-brand-positions",
+    "persona": "Nostalgic Millennial Parent",
+    "hook": "The brand claims its products — really.",
+    "style": "retro-cartoon",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3",
+      "f2"
+    ],
+    "contextVersion": 1,
+    "contextHash": "20281863d9d96b07",
+    "priorSource": "competitive_fact"
+  },
+  {
+    "id": "g1r1-b2",
+    "brandId": "brand-magicspoon-com",
+    "generation": 1,
+    "angle": "problem-solution",
+    "persona": "Fitness-Focused Protein Seeker",
+    "hook": "Meet Magic Spoon, again.",
+    "style": "clean-clinical",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3",
+      "f2"
+    ],
+    "contextVersion": 1,
+    "contextHash": "20281863d9d96b07",
+    "priorSource": "competitive_fact"
+  },
+  {
+    "id": "g1r1-b3",
+    "brandId": "brand-magicspoon-com",
+    "generation": 1,
+    "angle": "social-proof",
+    "persona": "Health-Conscious Dietary Planner",
+    "hook": "The social proof moment.",
+    "style": "clean-clinical",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3",
+      "f2"
+    ],
+    "contextVersion": 1,
+    "contextHash": "20281863d9d96b07",
+    "priorSource": "competitive_fact"
+  },
+  {
+    "id": "g1r1-b4",
+    "brandId": "brand-magicspoon-com",
+    "generation": 1,
+    "angle": "feature-flex",
+    "persona": "Fitness-Focused Protein Seeker",
+    "hook": "The brand uses a.",
+    "style": "retro-cartoon",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3",
+      "f2"
+    ],
+    "contextVersion": 1,
+    "contextHash": "20281863d9d96b07",
+    "priorSource": "competitive_fact"
+  },
+  {
+    "id": "g1r1-b5",
+    "brandId": "brand-magicspoon-com",
+    "generation": 1,
+    "angle": "lifestyle-aspiration",
+    "persona": "Health-Conscious Dietary Planner",
+    "hook": "The social proof moment.",
+    "style": "retro-cartoon",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3",
+      "f2"
+    ],
+    "contextVersion": 1,
+    "contextHash": "20281863d9d96b07",
+    "priorSource": "competitive_fact"
+  },
+  {
+    "id": "g1r1-b6",
+    "brandId": "brand-magicspoon-com",
+    "generation": 1,
+    "angle": "the-brand-positions",
+    "persona": "Nostalgic Millennial Parent",
+    "hook": "The brand uses a.",
+    "style": "clean-clinical",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3",
+      "f2"
+    ],
+    "contextVersion": 1,
+    "contextHash": "20281863d9d96b07",
+    "priorSource": "competitive_fact"
+  },
+  {
+    "id": "g2r1-b1",
+    "brandId": "brand-magicspoon-com",
+    "generation": 2,
+    "angle": "problem-solution",
+    "persona": "Fitness-Focused Protein Seeker",
+    "hook": "Meet Magic Spoon, again.",
+    "style": "clean-clinical",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3"
+    ],
+    "contextVersion": 2,
+    "contextHash": "c9c607c33054f163",
+    "priorSource": "sampled"
+  },
+  {
+    "id": "g2r1-b2",
+    "brandId": "brand-magicspoon-com",
+    "generation": 2,
+    "angle": "problem-solution",
+    "persona": "Nostalgic Millennial Parent",
+    "hook": "The problem solution moment.",
+    "style": "retro-cartoon",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3"
+    ],
+    "contextVersion": 2,
+    "contextHash": "c9c607c33054f163",
+    "priorSource": "sampled"
+  },
+  {
+    "id": "g2r1-b3",
+    "brandId": "brand-magicspoon-com",
+    "generation": 2,
+    "angle": "problem-solution",
+    "persona": "Health-Conscious Dietary Planner",
+    "hook": "The brand uses a.",
+    "style": "retro-cartoon",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3"
+    ],
+    "contextVersion": 2,
+    "contextHash": "c9c607c33054f163",
+    "priorSource": "sampled"
+  },
+  {
+    "id": "g2r1-b4",
+    "brandId": "brand-magicspoon-com",
+    "generation": 2,
+    "angle": "problem-solution",
+    "persona": "Nostalgic Millennial Parent",
+    "hook": "The brand uses a.",
+    "style": "clean-clinical",
+    "coreMessage": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "cta": "Shop now",
+    "sourceFactIds": [
+      "f4",
+      "f1",
+      "f-persona-1",
+      "f5",
+      "f3"
+    ],
+    "contextVersion": 2,
+    "contextHash": "c9c607c33054f163",
+    "priorSource": "sampled"
+  }
+]

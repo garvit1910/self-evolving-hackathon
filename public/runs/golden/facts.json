@@ -1,0 +1,134 @@
+[
+  {
+    "id": "f1",
+    "brandId": "brand-magicspoon-com",
+    "section": "positioning",
+    "statement": "The brand positions itself as a nostalgic, grown-up version of childhood classics.",
+    "sourceUrl": "https://magicspoon.com",
+    "sourceQuote": "Childhood Classics. Grown-Up Ingredients.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f2",
+    "brandId": "brand-magicspoon-com",
+    "section": "positioning",
+    "statement": "The cereal is designed to taste like classic Saturday-morning-cartoon cereal but with better-for-you ingredients.",
+    "sourceUrl": "https://magicspoon.com/pages/our-story",
+    "sourceQuote": "a cereal inspired by the flavors and nostalgia of Saturday-morning-cartoon cereal but upgraded for a 21st-century consumer.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f3",
+    "brandId": "brand-magicspoon-com",
+    "section": "positioning",
+    "statement": "The brand emphasizes that its high-protein cereal actually tastes like real cereal.",
+    "sourceUrl": "https://magicspoon.com",
+    "sourceQuote": "High-Protein Cereal That Actually Tastes Like Cereal.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f4",
+    "brandId": "brand-magicspoon-com",
+    "section": "value_prop",
+    "statement": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+    "sourceUrl": "https://magicspoon.com/pages/faq",
+    "sourceQuote": "We're committed to bringing you the best and find that our products are more cost-effective than many breakfast options out there, especially when you're looking to get 10-14g of protein for less than the cost of your morning coffee!",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f5",
+    "brandId": "brand-magicspoon-com",
+    "section": "voice",
+    "statement": "The brand uses a playful, nostalgic tone that contrasts childhood memories with adult sensibilities.",
+    "sourceUrl": "https://magicspoon.com",
+    "sourceQuote": "Childhood Classics. Grown-Up Ingredients.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f6",
+    "brandId": "brand-magicspoon-com",
+    "section": "voice",
+    "statement": "The co-founders speak in a personal, passionate, and story-driven manner.",
+    "sourceUrl": "https://magicspoon.com/pages/our-story",
+    "sourceQuote": "That’s what Magic Spoon is all about—we hope you enjoy!",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f7",
+    "brandId": "brand-magicspoon-com",
+    "section": "voice",
+    "statement": "The FAQ uses a humorous, playful question to draw customers in.",
+    "sourceUrl": "https://magicspoon.com/pages/faq",
+    "sourceQuote": "What kind of sorcery is this?\u0003Where did all the carbs and sugar go?",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f8",
+    "brandId": "brand-magicspoon-com",
+    "section": "compliance",
+    "statement": "The protein cereal is certified gluten-free and contains dairy.",
+    "sourceUrl": "https://magicspoon.com/pages/faq",
+    "sourceQuote": "Magic Spoon Protein Cereal: certified gluten free, contains dairy.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f9",
+    "brandId": "brand-magicspoon-com",
+    "section": "compliance",
+    "statement": "All Magic Spoon products are suitable for keto and low-carb diets.",
+    "sourceUrl": "https://magicspoon.com/pages/faq",
+    "sourceQuote": "All Magic Spoon products are great for low carb or keto lifestyles.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f10",
+    "brandId": "brand-magicspoon-com",
+    "section": "compliance",
+    "statement": "Most products are certified kosher.",
+    "sourceUrl": "https://magicspoon.com/pages/faq",
+    "sourceQuote": "Most of our products are certified Kosher. Please see packaging for our most recent Kosher certifications.",
+    "confidence": 1,
+    "origin": "research"
+  },
+  {
+    "id": "f-persona-1",
+    "brandId": "brand-magicspoon-com",
+    "section": "persona",
+    "statement": "Nostalgic Millennial Parent: A millennial in their 30s–40s who grew up eating sugary Saturday-morning cereals and now wants to relive that joy without the guilt, while also setting a better example for their kids.",
+    "confidence": 0.8,
+    "origin": "research"
+  },
+  {
+    "id": "f-persona-2",
+    "brandId": "brand-magicspoon-com",
+    "section": "persona",
+    "statement": "Fitness-Focused Protein Seeker: An active adult in their 20s–35s who prioritizes hitting daily protein macros and follows a low-carb or keto lifestyle, but is bored of shakes and eggs and craves convenient, tasty options.",
+    "confidence": 0.8,
+    "origin": "research"
+  },
+  {
+    "id": "f-persona-3",
+    "brandId": "brand-magicspoon-com",
+    "section": "persona",
+    "statement": "Health-Conscious Dietary Planner: A detail-oriented adult managing specific dietary requirements — such as gluten intolerance, kosher observance, or low-carb needs — who wants a certified, trustworthy product that doesn't sacrifice flavor.",
+    "confidence": 0.8,
+    "origin": "research"
+  },
+  {
+    "id": "fact-pl-style-clean-clinical",
+    "brandId": "brand-magicspoon-com",
+    "section": "market_prior",
+    "statement": "style 'clean-clinical' outperforms: 1.42× CTR (n=81239 impressions, 95% CI [0.0210,0.0231]); ROAS 6.02",
+    "confidence": 0.9,
+    "origin": "performance_loop"
+  }
+]

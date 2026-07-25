@@ -1,0 +1,12 @@
+{
+  "id": "brand-magicspoon-com",
+  "url": "https://magicspoon.com",
+  "name": "Magic Spoon",
+  "productImageUrl": "/api/files/uploads/brand-magicspoon-com/product.png",
+  "contextVersion": 2,
+  "contextHash": "c9c607c33054f163",
+  "sensoSourceIds": [
+    "b56f5cd1-9de7-4041-8994-c1f781cc8bcf",
+    "3a488d35-ef36-4eb1-9dad-e1e5dfb7b9c2"
+  ]
+}

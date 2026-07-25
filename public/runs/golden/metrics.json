@@ -1,0 +1,650 @@
+[
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 1,
+    "impressions": 2350,
+    "clicks": 33,
+    "purchases": 3,
+    "spend": 17.63,
+    "purchaseValue": 117
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 1,
+    "impressions": 2355,
+    "clicks": 77,
+    "purchases": 2,
+    "spend": 17.66,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 1,
+    "impressions": 1255,
+    "clicks": 10,
+    "purchases": 0,
+    "spend": 9.41,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 1,
+    "impressions": 1987,
+    "clicks": 29,
+    "purchases": 1,
+    "spend": 14.9,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 1,
+    "impressions": 1311,
+    "clicks": 18,
+    "purchases": 1,
+    "spend": 9.83,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 1,
+    "impressions": 742,
+    "clicks": 7,
+    "purchases": 0,
+    "spend": 5.57,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 2,
+    "impressions": 1766,
+    "clicks": 28,
+    "purchases": 0,
+    "spend": 13.25,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 2,
+    "impressions": 3243,
+    "clicks": 89,
+    "purchases": 1,
+    "spend": 24.32,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 2,
+    "impressions": 1334,
+    "clicks": 11,
+    "purchases": 0,
+    "spend": 10.01,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 2,
+    "impressions": 1242,
+    "clicks": 27,
+    "purchases": 1,
+    "spend": 9.32,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 2,
+    "impressions": 1340,
+    "clicks": 16,
+    "purchases": 0,
+    "spend": 10.05,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 2,
+    "impressions": 1075,
+    "clicks": 16,
+    "purchases": 1,
+    "spend": 8.06,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 3,
+    "impressions": 1824,
+    "clicks": 36,
+    "purchases": 0,
+    "spend": 13.68,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 3,
+    "impressions": 3325,
+    "clicks": 90,
+    "purchases": 4,
+    "spend": 24.94,
+    "purchaseValue": 156
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 3,
+    "impressions": 707,
+    "clicks": 9,
+    "purchases": 2,
+    "spend": 5.3,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 3,
+    "impressions": 1439,
+    "clicks": 23,
+    "purchases": 0,
+    "spend": 10.79,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 3,
+    "impressions": 1351,
+    "clicks": 14,
+    "purchases": 0,
+    "spend": 10.13,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 3,
+    "impressions": 1354,
+    "clicks": 18,
+    "purchases": 0,
+    "spend": 10.15,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 4,
+    "impressions": 1613,
+    "clicks": 38,
+    "purchases": 2,
+    "spend": 12.1,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 4,
+    "impressions": 2636,
+    "clicks": 86,
+    "purchases": 6,
+    "spend": 19.77,
+    "purchaseValue": 234
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 4,
+    "impressions": 1341,
+    "clicks": 10,
+    "purchases": 0,
+    "spend": 10.06,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 4,
+    "impressions": 1683,
+    "clicks": 20,
+    "purchases": 4,
+    "spend": 12.62,
+    "purchaseValue": 156
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 4,
+    "impressions": 1239,
+    "clicks": 10,
+    "purchases": 1,
+    "spend": 9.29,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 4,
+    "impressions": 1488,
+    "clicks": 18,
+    "purchases": 1,
+    "spend": 11.16,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 5,
+    "impressions": 1632,
+    "clicks": 31,
+    "purchases": 1,
+    "spend": 12.24,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 5,
+    "impressions": 2814,
+    "clicks": 85,
+    "purchases": 6,
+    "spend": 21.11,
+    "purchaseValue": 234
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 5,
+    "impressions": 965,
+    "clicks": 14,
+    "purchases": 2,
+    "spend": 7.24,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 5,
+    "impressions": 1824,
+    "clicks": 33,
+    "purchases": 0,
+    "spend": 13.68,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 5,
+    "impressions": 1438,
+    "clicks": 25,
+    "purchases": 1,
+    "spend": 10.79,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 5,
+    "impressions": 1327,
+    "clicks": 15,
+    "purchases": 2,
+    "spend": 9.95,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 6,
+    "impressions": 1783,
+    "clicks": 35,
+    "purchases": 2,
+    "spend": 13.37,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 6,
+    "impressions": 2941,
+    "clicks": 93,
+    "purchases": 5,
+    "spend": 22.06,
+    "purchaseValue": 195
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 6,
+    "impressions": 847,
+    "clicks": 6,
+    "purchases": 0,
+    "spend": 6.35,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 6,
+    "impressions": 1849,
+    "clicks": 29,
+    "purchases": 0,
+    "spend": 13.87,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 6,
+    "impressions": 1262,
+    "clicks": 19,
+    "purchases": 2,
+    "spend": 9.47,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 6,
+    "impressions": 1318,
+    "clicks": 21,
+    "purchases": 1,
+    "spend": 9.89,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 7,
+    "impressions": 1756,
+    "clicks": 25,
+    "purchases": 2,
+    "spend": 13.17,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 7,
+    "impressions": 2785,
+    "clicks": 73,
+    "purchases": 3,
+    "spend": 20.89,
+    "purchaseValue": 117
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 7,
+    "impressions": 1015,
+    "clicks": 11,
+    "purchases": 1,
+    "spend": 7.61,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 7,
+    "impressions": 1602,
+    "clicks": 31,
+    "purchases": 1,
+    "spend": 12.02,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 7,
+    "impressions": 1428,
+    "clicks": 17,
+    "purchases": 1,
+    "spend": 10.71,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 7,
+    "impressions": 1414,
+    "clicks": 17,
+    "purchases": 1,
+    "spend": 10.61,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 8,
+    "impressions": 1734,
+    "clicks": 28,
+    "purchases": 1,
+    "spend": 13.01,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 8,
+    "impressions": 2861,
+    "clicks": 71,
+    "purchases": 7,
+    "spend": 21.46,
+    "purchaseValue": 273
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 8,
+    "impressions": 1132,
+    "clicks": 13,
+    "purchases": 0,
+    "spend": 8.49,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 8,
+    "impressions": 1722,
+    "clicks": 26,
+    "purchases": 1,
+    "spend": 12.92,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 8,
+    "impressions": 1246,
+    "clicks": 12,
+    "purchases": 0,
+    "spend": 9.35,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 8,
+    "impressions": 1305,
+    "clicks": 20,
+    "purchases": 3,
+    "spend": 9.79,
+    "purchaseValue": 117
+  },
+  {
+    "adId": "ad-g1r1-c1",
+    "day": 9,
+    "impressions": 1944,
+    "clicks": 34,
+    "purchases": 0,
+    "spend": 14.58,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 9,
+    "impressions": 2763,
+    "clicks": 85,
+    "purchases": 5,
+    "spend": 20.72,
+    "purchaseValue": 195
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 9,
+    "impressions": 1074,
+    "clicks": 15,
+    "purchases": 1,
+    "spend": 8.06,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 9,
+    "impressions": 1616,
+    "clicks": 32,
+    "purchases": 1,
+    "spend": 12.12,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 9,
+    "impressions": 1337,
+    "clicks": 15,
+    "purchases": 1,
+    "spend": 10.03,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 9,
+    "impressions": 1266,
+    "clicks": 15,
+    "purchases": 1,
+    "spend": 9.49,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 10,
+    "impressions": 3358,
+    "clicks": 87,
+    "purchases": 3,
+    "spend": 25.19,
+    "purchaseValue": 117
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 10,
+    "impressions": 1455,
+    "clicks": 17,
+    "purchases": 1,
+    "spend": 10.91,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c4",
+    "day": 10,
+    "impressions": 2081,
+    "clicks": 40,
+    "purchases": 1,
+    "spend": 15.61,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 10,
+    "impressions": 1428,
+    "clicks": 16,
+    "purchases": 1,
+    "spend": 10.71,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 10,
+    "impressions": 1678,
+    "clicks": 21,
+    "purchases": 1,
+    "spend": 12.59,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 11,
+    "impressions": 4114,
+    "clicks": 119,
+    "purchases": 1,
+    "spend": 30.86,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 11,
+    "impressions": 1958,
+    "clicks": 21,
+    "purchases": 1,
+    "spend": 14.69,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g1r1-c5",
+    "day": 11,
+    "impressions": 1934,
+    "clicks": 15,
+    "purchases": 0,
+    "spend": 14.51,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 11,
+    "impressions": 1994,
+    "clicks": 38,
+    "purchases": 2,
+    "spend": 14.96,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 12,
+    "impressions": 5396,
+    "clicks": 145,
+    "purchases": 4,
+    "spend": 40.47,
+    "purchaseValue": 156
+  },
+  {
+    "adId": "ad-g1r1-c3",
+    "day": 12,
+    "impressions": 2052,
+    "clicks": 21,
+    "purchases": 2,
+    "spend": 15.39,
+    "purchaseValue": 78
+  },
+  {
+    "adId": "ad-g1r1-c6",
+    "day": 12,
+    "impressions": 2552,
+    "clicks": 47,
+    "purchases": 7,
+    "spend": 19.14,
+    "purchaseValue": 273
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 13,
+    "impressions": 10000,
+    "clicks": 278,
+    "purchases": 17,
+    "spend": 75,
+    "purchaseValue": 663
+  },
+  {
+    "adId": "ad-g1r1-c2",
+    "day": 14,
+    "impressions": 315,
+    "clicks": 11,
+    "purchases": 0,
+    "spend": 2.36,
+    "purchaseValue": 0
+  },
+  {
+    "adId": "ad-g2r1-c1",
+    "day": 14,
+    "impressions": 470,
+    "clicks": 16,
+    "purchases": 1,
+    "spend": 3.53,
+    "purchaseValue": 39
+  },
+  {
+    "adId": "ad-g2r1-c2",
+    "day": 14,
+    "impressions": 4067,
+    "clicks": 182,
+    "purchases": 10,
+    "spend": 30.5,
+    "purchaseValue": 390
+  },
+  {
+    "adId": "ad-g2r1-c3",
+    "day": 14,
+    "impressions": 2574,
+    "clicks": 92,
+    "purchases": 4,
+    "spend": 19.31,
+    "purchaseValue": 156
+  },
+  {
+    "adId": "ad-g2r1-c4",
+    "day": 14,
+    "impressions": 2574,
+    "clicks": 88,
+    "purchases": 10,
+    "spend": 19.31,
+    "purchaseValue": 390
+  }
+]

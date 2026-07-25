@@ -231,11 +231,14 @@ export class LocalStore {
     const isWebp = bytes.subarray(0, 4).toString('ascii') === 'RIFF' && bytes.subarray(8, 12).toString('ascii') === 'WEBP';
     if (!isPng && !isJpeg && !isWebp) {
       try {
+        // sips refuses identical in/out paths (uploads are often ".png"-named
+        // AVIF), so transcode through a temp file and swap it into place
+        const tmp = `${file}.transcode.png`;
+        execFileSync('sips', ['-s', 'format', 'png', file, '--out', tmp], { stdio: 'ignore' });
         const png = file.replace(/\.[^.]+$/, '') + '.png';
-        execFileSync('sips', ['-s', 'format', 'png', file, '--out', png], { stdio: 'ignore' });
-        if (png !== file) rmSync(file);
-        const pngName = path.basename(png);
-        return `/api/files/uploads/${brandId}/${pngName}`;
+        rmSync(file);
+        renameSync(tmp, png);
+        return `/api/files/uploads/${brandId}/${path.basename(png)}`;
       } catch {
         console.warn(`[store] product image is not PNG/JPEG/WebP and transcode failed — live image edits may reject it`);
       }

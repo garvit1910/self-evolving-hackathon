@@ -1,0 +1,574 @@
+[
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Swarm",
+      "message": "Swarm launching on https://magicspoon.com.",
+      "room": "brand-research:brand-magicspoon-com",
+      "status": "starting",
+      "brandUrl": "https://magicspoon.com"
+    },
+    "ts": 1784938599190
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com (4656 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com",
+      "chars": 4656
+    },
+    "ts": 1784938599637
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/pages/our-story (2100 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/pages/our-story",
+      "chars": 2100
+    },
+    "ts": 1784938600020
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/pages/faq (9310 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/pages/faq",
+      "chars": 9310
+    },
+    "ts": 1784938600423
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/collections/shop-all (5155 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/collections/shop-all",
+      "chars": 5155
+    },
+    "ts": 1784938600996
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/pages/contact (1245 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/pages/contact",
+      "chars": 1245
+    },
+    "ts": 1784938601370
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/collections/shop-all?filter=cereal (5155 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/collections/shop-all?filter=cereal",
+      "chars": 5155
+    },
+    "ts": 1784938601961
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/collections/shop-all?filter=oatmeal (5155 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/collections/shop-all?filter=oatmeal",
+      "chars": 5155
+    },
+    "ts": 1784938602464
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "Fetched https://magicspoon.com/collections/shop-all?filter=treats (5155 chars).",
+      "room": "brand-research:brand-magicspoon-com",
+      "url": "https://magicspoon.com/collections/shop-all?filter=treats",
+      "chars": 5155
+    },
+    "ts": 1784938603063
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Scout",
+      "message": "thought: summary=fetched 8 page(s) from magicspoon.com",
+      "room": "brand-research:brand-magicspoon-com",
+      "summary": "fetched 8 page(s) from magicspoon.com"
+    },
+    "ts": 1784938603184
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [positioning] The brand positions itself as a nostalgic, grown-up version of childhood classics. — source: \"Childhood Classics. Grown-Up Ingredients.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f1",
+      "section": "positioning",
+      "statement": "The brand positions itself as a nostalgic, grown-up version of childhood classics.",
+      "sourceQuote": "Childhood Classics. Grown-Up Ingredients.",
+      "sourceUrl": "https://magicspoon.com"
+    },
+    "ts": 1784938704802
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [positioning] The cereal is designed to taste like classic Saturday-morning-cartoon cereal but with better-for-you ingredients. — source: \"a cereal inspired by the flavors and nostalgia of Saturday-morning-cartoon cereal but upgraded for a 21st-century consumer.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f2",
+      "section": "positioning",
+      "statement": "The cereal is designed to taste like classic Saturday-morning-cartoon cereal but with better-for-you ingredients.",
+      "sourceQuote": "a cereal inspired by the flavors and nostalgia of Saturday-morning-cartoon cereal but upgraded for a 21st-century consumer.",
+      "sourceUrl": "https://magicspoon.com/pages/our-story"
+    },
+    "ts": 1784938704984
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [positioning] The brand emphasizes that its high-protein cereal actually tastes like real cereal. — source: \"High-Protein Cereal That Actually Tastes Like Cereal.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f3",
+      "section": "positioning",
+      "statement": "The brand emphasizes that its high-protein cereal actually tastes like real cereal.",
+      "sourceQuote": "High-Protein Cereal That Actually Tastes Like Cereal.",
+      "sourceUrl": "https://magicspoon.com"
+    },
+    "ts": 1784938705087
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Dropped a value_prop fact — quote not verbatim in https://magicspoon.com.",
+      "room": "brand-research:brand-magicspoon-com",
+      "dropped": true,
+      "section": "value_prop",
+      "reason": "quote not verbatim in source",
+      "sourceUrl": "https://magicspoon.com"
+    },
+    "ts": 1784938705220
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Dropped a value_prop fact — quote not verbatim in https://magicspoon.com.",
+      "room": "brand-research:brand-magicspoon-com",
+      "dropped": true,
+      "section": "value_prop",
+      "reason": "quote not verbatim in source",
+      "sourceUrl": "https://magicspoon.com"
+    },
+    "ts": 1784938705331
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [value_prop] The brand claims its products are more cost-effective than many breakfast options for getting protein. — source: \"We're committed to bringing you the best and find that our products are more cost-effective than many breakfast options out there, especially when you're looking to get 10-14g of protein for less than the cost of your morning coffee!\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f4",
+      "section": "value_prop",
+      "statement": "The brand claims its products are more cost-effective than many breakfast options for getting protein.",
+      "sourceQuote": "We're committed to bringing you the best and find that our products are more cost-effective than many breakfast options out there, especially when you're looking to get 10-14g of protein for less than the cost of your morning coffee!",
+      "sourceUrl": "https://magicspoon.com/pages/faq"
+    },
+    "ts": 1784938705444
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [voice] The brand uses a playful, nostalgic tone that contrasts childhood memories with adult sensibilities. — source: \"Childhood Classics. Grown-Up Ingredients.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f5",
+      "section": "voice",
+      "statement": "The brand uses a playful, nostalgic tone that contrasts childhood memories with adult sensibilities.",
+      "sourceQuote": "Childhood Classics. Grown-Up Ingredients.",
+      "sourceUrl": "https://magicspoon.com"
+    },
+    "ts": 1784938705548
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [voice] The co-founders speak in a personal, passionate, and story-driven manner. — source: \"That’s what Magic Spoon is all about—we hope you enjoy!\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f6",
+      "section": "voice",
+      "statement": "The co-founders speak in a personal, passionate, and story-driven manner.",
+      "sourceQuote": "That’s what Magic Spoon is all about—we hope you enjoy!",
+      "sourceUrl": "https://magicspoon.com/pages/our-story"
+    },
+    "ts": 1784938705680
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [voice] The FAQ uses a humorous, playful question to draw customers in. — source: \"What kind of sorcery is this?\u0003Where did all the carbs and sugar go?\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f7",
+      "section": "voice",
+      "statement": "The FAQ uses a humorous, playful question to draw customers in.",
+      "sourceQuote": "What kind of sorcery is this?\u0003Where did all the carbs and sugar go?",
+      "sourceUrl": "https://magicspoon.com/pages/faq"
+    },
+    "ts": 1784938705799
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [compliance] The protein cereal is certified gluten-free and contains dairy. — source: \"Magic Spoon Protein Cereal: certified gluten free, contains dairy.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f8",
+      "section": "compliance",
+      "statement": "The protein cereal is certified gluten-free and contains dairy.",
+      "sourceQuote": "Magic Spoon Protein Cereal: certified gluten free, contains dairy.",
+      "sourceUrl": "https://magicspoon.com/pages/faq"
+    },
+    "ts": 1784938705935
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [compliance] All Magic Spoon products are suitable for keto and low-carb diets. — source: \"All Magic Spoon products are great for low carb or keto lifestyles.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f9",
+      "section": "compliance",
+      "statement": "All Magic Spoon products are suitable for keto and low-carb diets.",
+      "sourceQuote": "All Magic Spoon products are great for low carb or keto lifestyles.",
+      "sourceUrl": "https://magicspoon.com/pages/faq"
+    },
+    "ts": 1784938706037
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Fact [compliance] Most products are certified kosher. — source: \"Most of our products are certified Kosher. Please see packaging for our most recent Kosher certifications.\"",
+      "room": "brand-research:brand-magicspoon-com",
+      "factId": "f10",
+      "section": "compliance",
+      "statement": "Most products are certified kosher.",
+      "sourceQuote": "Most of our products are certified Kosher. Please see packaging for our most recent Kosher certifications.",
+      "sourceUrl": "https://magicspoon.com/pages/faq"
+    },
+    "ts": 1784938706155
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Analyst",
+      "message": "Extraction complete: 10 verified facts, 2 dropped.",
+      "room": "brand-research:brand-magicspoon-com",
+      "extracted": 10,
+      "dropped": 2,
+      "sections": [
+        "positioning",
+        "value_prop",
+        "voice",
+        "compliance"
+      ]
+    },
+    "ts": 1784938706273
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Personasmith",
+      "message": "Persona: Nostalgic Millennial Parent — A millennial in their 30s–40s who grew up eating sugary Saturday-morning cereals and now wants to relive that joy without the guilt, while also setting a better example for their kids.",
+      "room": "brand-research:brand-magicspoon-com",
+      "persona": "Nostalgic Millennial Parent",
+      "summary": "A millennial in their 30s–40s who grew up eating sugary Saturday-morning cereals and now wants to relive that joy without the guilt, while also setting a better example for their kids.",
+      "factIds": [
+        "f1",
+        "f2",
+        "f3",
+        "f5",
+        "f6",
+        "f7"
+      ]
+    },
+    "ts": 1784938726911
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Personasmith",
+      "message": "Persona: Fitness-Focused Protein Seeker — An active adult in their 20s–35s who prioritizes hitting daily protein macros and follows a low-carb or keto lifestyle, but is bored of shakes and eggs and craves convenient, tasty options.",
+      "room": "brand-research:brand-magicspoon-com",
+      "persona": "Fitness-Focused Protein Seeker",
+      "summary": "An active adult in their 20s–35s who prioritizes hitting daily protein macros and follows a low-carb or keto lifestyle, but is bored of shakes and eggs and craves convenient, tasty options.",
+      "factIds": [
+        "f3",
+        "f4",
+        "f9",
+        "f2",
+        "f5"
+      ]
+    },
+    "ts": 1784938727050
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Personasmith",
+      "message": "Persona: Health-Conscious Dietary Planner — A detail-oriented adult managing specific dietary requirements — such as gluten intolerance, kosher observance, or low-carb needs — who wants a certified, trustworthy product that doesn't sacrifice flavor.",
+      "room": "brand-research:brand-magicspoon-com",
+      "persona": "Health-Conscious Dietary Planner",
+      "summary": "A detail-oriented adult managing specific dietary requirements — such as gluten intolerance, kosher observance, or low-carb needs — who wants a certified, trustworthy product that doesn't sacrifice flavor.",
+      "factIds": [
+        "f8",
+        "f9",
+        "f10",
+        "f4",
+        "f2",
+        "f6"
+      ]
+    },
+    "ts": 1784938727168
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Governance",
+      "message": "Research publish approved.",
+      "room": "brand-research:brand-magicspoon-com",
+      "action": "research_publish",
+      "ok": true
+    },
+    "ts": 1784938728834
+  },
+  {
+    "step": "research",
+    "status": "running",
+    "payload": {
+      "agent": "Swarm",
+      "message": "Swarm done: 8 pages, 10 facts, 3 personas.",
+      "room": "brand-research:brand-magicspoon-com",
+      "status": "done",
+      "pages": 8,
+      "facts": 10,
+      "personas": 3,
+      "contextHash": "senso_e3e3254a-42ab-48b3-afa8-",
+      "governanceOk": true
+    },
+    "ts": 1784938728944
+  },
+  {
+    "step": "research",
+    "status": "done",
+    "payload": {
+      "agent": "Swarm",
+      "message": "Research complete: 13 facts ingested (context v1).",
+      "facts": 13,
+      "personas": 3,
+      "version": 1,
+      "hash": "20281863d9d96b07",
+      "mode": "swarm"
+    },
+    "ts": 1784938730414
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938733736,
+    "payload": {
+      "agent": "Creative",
+      "message": "thought: status=starting briefId=g1r1-b1 generation=1 n=6",
+      "room": "brand-creative:brand-magicspoon-com",
+      "status": "starting",
+      "briefId": "g1r1-b1",
+      "generation": 1,
+      "n": 6
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938735821,
+    "payload": {
+      "agent": "Creative",
+      "message": "tool_result: genomes=6 bannedTerms=10",
+      "room": "brand-creative:brand-magicspoon-com",
+      "genomes": 6,
+      "bannedTerms": 10
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938750398,
+    "payload": {
+      "agent": "Copywriter",
+      "message": "Copy written for 6 genomes (6 live, 0 fallback).",
+      "room": "brand-creative:brand-magicspoon-com",
+      "requested": 6,
+      "generated": 6,
+      "fallbacks": 0
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938790431,
+    "payload": {
+      "agent": "Imagesmith",
+      "message": "Rendered 6 images (0 fell back), mode openai.",
+      "room": "brand-creative:brand-magicspoon-com",
+      "rendered": 6,
+      "failed": 0,
+      "mode": "openai"
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938790433,
+    "payload": {
+      "agent": "Governance",
+      "message": "Publish approved — creative set cleared governance.",
+      "room": "brand-creative:brand-magicspoon-com",
+      "action": "creative_publish",
+      "ok": true
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938790433,
+    "payload": {
+      "agent": "Creative",
+      "message": "thought: status=done creatives=6 dropped=0 governanceOk=true",
+      "room": "brand-creative:brand-magicspoon-com",
+      "status": "done",
+      "creatives": 6,
+      "dropped": 0,
+      "governanceOk": true
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938833790,
+    "payload": {
+      "agent": "Creative",
+      "message": "thought: status=starting briefId=g2r1-b1 generation=2 n=4",
+      "room": "brand-creative:brand-magicspoon-com",
+      "status": "starting",
+      "briefId": "g2r1-b1",
+      "generation": 2,
+      "n": 4
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938835742,
+    "payload": {
+      "agent": "Creative",
+      "message": "tool_result: genomes=4 bannedTerms=16",
+      "room": "brand-creative:brand-magicspoon-com",
+      "genomes": 4,
+      "bannedTerms": 16
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938848008,
+    "payload": {
+      "agent": "Copywriter",
+      "message": "Copy written for 4 genomes (4 live, 0 fallback).",
+      "room": "brand-creative:brand-magicspoon-com",
+      "requested": 4,
+      "generated": 4,
+      "fallbacks": 0
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938875896,
+    "payload": {
+      "agent": "Imagesmith",
+      "message": "Rendered 4 images (0 fell back), mode openai.",
+      "room": "brand-creative:brand-magicspoon-com",
+      "rendered": 4,
+      "failed": 0,
+      "mode": "openai"
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938875898,
+    "payload": {
+      "agent": "Governance",
+      "message": "Publish approved — creative set cleared governance.",
+      "room": "brand-creative:brand-magicspoon-com",
+      "action": "creative_publish",
+      "ok": true
+    }
+  },
+  {
+    "step": "generate",
+    "status": "running",
+    "ts": 1784938875899,
+    "payload": {
+      "agent": "Creative",
+      "message": "thought: status=done creatives=4 dropped=0 governanceOk=true",
+      "room": "brand-creative:brand-magicspoon-com",
+      "status": "done",
+      "creatives": 4,
+      "dropped": 0,
+      "governanceOk": true
+    }
+  }
+]

@@ -1,0 +1,37 @@
+{
+  "brandId": "brand-magicspoon-com",
+  "brandUrl": "https://magicspoon.com",
+  "capturedAt": "2026-07-25T00:21:38.398Z",
+  "research": {
+    "facts": 13,
+    "mode": "swarm"
+  },
+  "gen1": {
+    "creatives": 6,
+    "copy": "live",
+    "image": "openai"
+  },
+  "gen2": {
+    "creatives": 4,
+    "image": "openai"
+  },
+  "writeback": "v2 hash=c9c607c33054f163",
+  "verdict": {
+    "day": 14,
+    "result": "gen2_wins",
+    "gen1Ctr": 0.019606338487511032,
+    "gen2Ctr": 0.039029426948890035
+  },
+  "files": [
+    "brand.json",
+    "briefs.json",
+    "creatives.json",
+    "events.json",
+    "facts.json",
+    "images",
+    "learnings.json",
+    "metrics.json",
+    "panel-scores.json"
+  ],
+  "wallClockSeconds": 301
+}

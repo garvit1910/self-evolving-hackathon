@@ -1,0 +1,212 @@
+[
+  {
+    "id": "g1r1-c1",
+    "briefId": "g1r1-b1",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g1r1-c1.png",
+    "copy": "Magic Spoon brings back the Saturday-morning cereal magic you grew up on — really — now packed with protein and none of the sugar crash your kids don't need. Relive the bowl, upgrade the nutrition, and shop now.",
+    "genome": {
+      "angle": "the-brand-positions",
+      "persona": "Nostalgic Millennial Parent",
+      "hook": "The brand claims its products — really.",
+      "style": "retro-cartoon",
+      "generation": 1
+    },
+    "status": "live",
+    "publishedAdId": "ad-g1r1-c1",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g1r1-c2",
+    "briefId": "g1r1-b2",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g1r1-c2.png",
+    "copy": "Meet Magic Spoon, again — the high-protein, keto-friendly cereal that finally gives you a delicious alternative to your fifth egg of the week. Stop settling for boring macros and shop now.",
+    "genome": {
+      "angle": "problem-solution",
+      "persona": "Fitness-Focused Protein Seeker",
+      "hook": "Meet Magic Spoon, again.",
+      "style": "clean-clinical",
+      "generation": 1
+    },
+    "status": "live",
+    "publishedAdId": "ad-g1r1-c2",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g1r1-c3",
+    "briefId": "g1r1-b3",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g1r1-c3.png",
+    "copy": "Thousands of health-conscious eaters have made the switch to Magic Spoon — certified gluten-free, mostly kosher, keto-friendly, and actually delicious enough to make dietary planning feel less like a chore. Join them and shop now.",
+    "genome": {
+      "angle": "social-proof",
+      "persona": "Health-Conscious Dietary Planner",
+      "hook": "The social proof moment.",
+      "style": "clean-clinical",
+      "generation": 1
+    },
+    "status": "live",
+    "publishedAdId": "ad-g1r1-c3",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g1r1-c4",
+    "briefId": "g1r1-b4",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g1r1-c4.png",
+    "copy": "Magic Spoon uses a powerhouse protein formula to pack every bowl with the macros your keto lifestyle demands, while keeping carbs low and flavor outrageously high. Ditch the shakes and shop now.",
+    "genome": {
+      "angle": "feature-flex",
+      "persona": "Fitness-Focused Protein Seeker",
+      "hook": "The brand uses a.",
+      "style": "retro-cartoon",
+      "generation": 1
+    },
+    "status": "live",
+    "publishedAdId": "ad-g1r1-c4",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g1r1-c5",
+    "briefId": "g1r1-b5",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g1r1-c5.png",
+    "copy": "Thousands of label-readers and dietary planners have discovered that Magic Spoon's certified gluten-free, keto-friendly cereal doesn't ask you to choose between your requirements and your taste buds. Eat well, eat confidently — shop now.",
+    "genome": {
+      "angle": "lifestyle-aspiration",
+      "persona": "Health-Conscious Dietary Planner",
+      "hook": "The social proof moment.",
+      "style": "retro-cartoon",
+      "generation": 1
+    },
+    "status": "live",
+    "publishedAdId": "ad-g1r1-c5",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g1r1-c6",
+    "briefId": "g1r1-b6",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g1r1-c6.png",
+    "copy": "Magic Spoon uses a smarter nutritional formula to deliver the nostalgic cereal experience you want to share with your kids — more cost-effective than many breakfast options and built with protein, not sugar. Set a better bowl and shop now.",
+    "genome": {
+      "angle": "the-brand-positions",
+      "persona": "Nostalgic Millennial Parent",
+      "hook": "The brand uses a.",
+      "style": "clean-clinical",
+      "generation": 1
+    },
+    "status": "live",
+    "publishedAdId": "ad-g1r1-c6",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g2r1-c1",
+    "briefId": "g2r1-b1",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g2r1-c1.png",
+    "copy": "Meet Magic Spoon, again — the high-protein cereal that fits your macros without the monotony of another shake or plain eggs. Swap the boring, upgrade your breakfast, and shop now.",
+    "genome": {
+      "angle": "problem-solution",
+      "persona": "Fitness-Focused Protein Seeker",
+      "hook": "Meet Magic Spoon, again.",
+      "style": "clean-clinical",
+      "generation": 2
+    },
+    "status": "live",
+    "publishedAdId": "ad-g2r1-c1",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g2r1-c2",
+    "briefId": "g2r1-b2",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g2r1-c2.png",
+    "copy": "Remember Saturday morning cartoons and a bowl of something magically sweet — now imagine that joy without the sugar crash, and with protein your kids (and you) actually need. Relive the fun the right way and shop now.",
+    "genome": {
+      "angle": "problem-solution",
+      "persona": "Nostalgic Millennial Parent",
+      "hook": "The problem solution moment.",
+      "style": "retro-cartoon",
+      "generation": 2
+    },
+    "status": "live",
+    "publishedAdId": "ad-g2r1-c2",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g2r1-c3",
+    "briefId": "g2r1-b3",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g2r1-c3.png",
+    "copy": "Magic Spoon uses a carefully crafted formula to meet strict dietary standards without ever skimping on that bold, nostalgic flavor you deserve. Trust the ingredients, love the taste — shop now.",
+    "genome": {
+      "angle": "problem-solution",
+      "persona": "Health-Conscious Dietary Planner",
+      "hook": "The brand uses a.",
+      "style": "retro-cartoon",
+      "generation": 2
+    },
+    "status": "live",
+    "publishedAdId": "ad-g2r1-c3",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  },
+  {
+    "id": "g2r1-c4",
+    "briefId": "g2r1-b4",
+    "brandId": "brand-magicspoon-com",
+    "imageUrl": "/runs/golden/images/g2r1-c4.png",
+    "copy": "Magic Spoon uses a smarter breakfast formula so you can pour a bowl that feels indulgent but fuels your family with serious protein — just like the cereals you loved, only better. Set the example and shop now.",
+    "genome": {
+      "angle": "problem-solution",
+      "persona": "Nostalgic Millennial Parent",
+      "hook": "The brand uses a.",
+      "style": "clean-clinical",
+      "generation": 2
+    },
+    "status": "live",
+    "publishedAdId": "ad-g2r1-c4",
+    "arm": {
+      "alpha": 1,
+      "beta": 1,
+      "pulls": 0
+    }
+  }
+]
