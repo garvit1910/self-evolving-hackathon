@@ -43,16 +43,48 @@ export class LLMError extends Error {
   }
 }
 
+// Gateway rosters churn (pioneer/auto vanished mid-hackathon). When the
+// configured model 404s, discover /models once and retry with the first
+// available preference. Cached per baseUrl for the process lifetime.
+const MODEL_PREFERENCES = ['claude-haiku-4-5', 'gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'];
+const discoveredModel = new Map<string, string>();
+
+export async function resolveAvailableModel(config: LLMConfig): Promise<string | null> {
+  const cached = discoveredModel.get(config.baseUrl);
+  if (cached) return cached;
+  try {
+    const res = await fetch(`${config.baseUrl}/models`, {
+      headers: { authorization: `Bearer ${config.apiKey}` },
+    });
+    if (!res.ok) return null;
+    const j = (await res.json()) as { data?: { id: string }[] };
+    const ids = new Set((j.data ?? []).map((m) => m.id));
+    const pick = MODEL_PREFERENCES.find((m) => ids.has(m)) ?? j.data?.[0]?.id ?? null;
+    if (pick) {
+      discoveredModel.set(config.baseUrl, pick);
+      console.warn(`[llm] model "${config.model}" unavailable — using "${pick}" from ${'/models'}`);
+    }
+    return pick;
+  } catch {
+    return null;
+  }
+}
+
 export class HTTPLLMClient {
-  constructor(private readonly config: LLMConfig) {}
+  constructor(private config: LLMConfig) {}
 
   /** Strict-JSON chat completion: one attempt + exactly one retry, then throws.
    *  The retry drops `response_format` (gateways that don't implement OpenAI
-   *  json mode 400 on it — e.g. some Pioneer models) and leans on the prompt. */
+   *  json mode 400 on it — e.g. some Pioneer models) and leans on the prompt.
+   *  A model-not-available 404 re-resolves the model from /models first. */
   async jsonChat<T>(opts: { system: string; user: string; maxTokens?: number }): Promise<T> {
     try {
       return await this.attempt<T>(opts, { jsonMode: true });
-    } catch {
+    } catch (err) {
+      if (err instanceof LLMError && err.message.includes('404')) {
+        const model = await resolveAvailableModel(this.config);
+        if (model) this.config = { ...this.config, model };
+      }
       return this.attempt<T>(opts, {
         jsonMode: false,
         extraInstruction: 'Return ONLY valid JSON. No prose, no markdown fences.',
