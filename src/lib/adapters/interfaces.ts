@@ -39,10 +39,10 @@ export interface Feed {
 
 /**
  * Governance decorator — client-side observable veto (e.g. block a low-confidence
- * writeback). Originally scoped as a Guild wrap; cut per the plan's own spike-gate
- * fallback (Guild's real model is deploying hosted TypeScript agents, not a REST
- * authorize call — too large a lift for the spike window). Band still carries the
- * agent-infra integration story.
+ * writeback). Originally scoped as a hosted-runtime wrap; cut per the plan's own
+ * spike-gate fallback (that provider's model is deploying hosted TypeScript
+ * agents, not a REST authorize call — too large a lift for the spike window).
+ * Band carries the agent-infra integration story.
  */
 export interface Governance {
   /** returns false to deny; reason surfaces in the feed. */

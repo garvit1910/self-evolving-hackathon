@@ -1,4 +1,4 @@
-// TODO(track-a): replaced by the Guild-governed Band swarm posting to the same
+// Kill-switch fallback: the Band swarm (src/agents/swarm.ts) posts to the same
 // routes (/facts + /events). This interim researcher exists so the demo works
 // end-to-end today; the feed renders its events identically to the swarm's.
 

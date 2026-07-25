@@ -192,7 +192,7 @@ persistence. If drops leave fewer than 4 survivors, publish is denied and the or
 surfaces the denial rather than shipping a threadbare set — a second observable block,
 mirroring the research swarm's low-confidence veto.
 
-**Updated after commit 22e7f66:** this was originally scoped as a Guild check. Guild's real
+**Updated after commit 22e7f66:** this was originally scoped as a hosted-runtime check. That provider's real
 integration model turned out to be deploying hosted TypeScript agents rather than a REST
 authorize call, so the real adapter was cut and `Governance` is now permanently the
 client-side observable-veto mock. The `Governance` interface and `adapters.governance` are

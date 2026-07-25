@@ -1,3 +1,3 @@
 # integrations/ — Track A territory
 
-Sponsor integrations (Senso, Pioneer, Actian, Guild, Supabase data source) live here. Track G does not touch this directory.
+Sponsor integrations (Senso, Pioneer, Actian, Band, Supabase data source) live in src/lib/adapters/ and behind the seams in src/lib/{context,vector,llm,imagegen}.ts.

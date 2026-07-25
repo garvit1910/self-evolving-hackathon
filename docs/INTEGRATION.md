@@ -3,7 +3,7 @@
 The HTTP contract between the app (Track G) and the research swarm / sponsor
 integrations (Track A). Everything the UI renders flows through these routes —
 the research feed and context views render identically whether data arrives
-from the interim researcher or the real Guild/Band swarm.
+from the interim researcher or the real Band swarm.
 
 Base URL (dev): `http://localhost:3002`
 
@@ -34,7 +34,7 @@ Base URL (dev): `http://localhost:3002`
   (`upsert(chunks)`, `query(text, k)`), then flip `getVectorStore()`.
 - **Pioneer** → no code: set `LLM_BASE_URL`/`LLM_API_KEY`/`LLM_MODEL`. The
   client (`src/lib/llm.ts`) speaks OpenAI-compatible chat completions.
-- **Guild/Band swarm** → replace the interim researcher by POSTing the same
+- **Band swarm** → replace the interim researcher by POSTing the same
   routes it uses: `/facts` for extracted facts, `/events` for feed progress.
   After a real Senso write, call `POST /api/learnings/:id/ingested`.
 

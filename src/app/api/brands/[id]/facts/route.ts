@@ -1,7 +1,7 @@
 import { ingestFactsService } from '@/lib/server/facts';
 import { getStore } from '@/lib/store';
 
-// The research swarm (interim or Track A's Guild/Band agents) posts Fact[]
+// The research swarm (interim or the Band agents) posts Fact[]
 // here. Malformed items are dropped and counted; valid ones persist, feed the
 // vector index, and bump the context version + hash when the set changes.
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {

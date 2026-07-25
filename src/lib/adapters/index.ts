@@ -14,12 +14,10 @@ import { createSensoContextStore } from './real/senso';
 import { createActianVectorStore } from './real/actian';
 import { createGeminiImageGen } from './real/gemini';
 
-// Guild: cut per plan fallback. Guild's real integration model is "deploy a
-// TypeScript agent to their hosted runtime" (guild agent init/save/publish),
-// not a REST authorize call — confirmed via `guild api`/CLI probing, no
-// workspace or agent existed on the account. Too large a lift for the spike
-// window. Governance stays the client-side observable-veto mock below; Band
-// still carries the agent-infra story per the plan's own fallback.
+// Governance stays the client-side observable-veto mock below (the hosted
+// agent-runtime integration it was originally scoped for was cut per the
+// plan's spike-gate fallback — deploying hosted agents was too large a lift
+// for the spike window). Band carries the agent-infra story.
 
 function flag(name: string): boolean {
   return process.env[name] === '1' || process.env[name] === 'true';

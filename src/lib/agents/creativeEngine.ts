@@ -8,8 +8,8 @@
  *
  * Governance gates publish. If drops leave too few survivors the run is denied
  * rather than shipping a threadbare set — a second OBSERVABLE block, mirroring
- * the research swarm's low-confidence veto. (Guild was cut in 22e7f66; this is
- * the client-side governance mock, which is now its permanent form.)
+ * the research swarm's low-confidence veto. Governance is a client-side
+ * observable veto by design (the hosted-runtime wrap was cut in 22e7f66).
  */
 
 import type { Brand, Brief, Creative, Genome, Persona, Prior } from '@/lib/contracts';

@@ -1281,8 +1281,8 @@ Create `src/lib/agents/creativeEngine.ts`:
  *
  * Governance gates publish. If drops leave too few survivors the run is denied
  * rather than shipping a threadbare set — a second OBSERVABLE block, mirroring
- * the research swarm's low-confidence veto. (Guild was cut in 22e7f66; this is
- * the client-side governance mock, which is now its permanent form.)
+ * the research swarm's low-confidence veto. (The hosted governance provider was cut in 22e7f66;
+ * this client-side governance mock is now its permanent form.)
  */
 
 import type { Brand, Brief, Creative, Genome, Persona, Prior } from '@/lib/contracts';
