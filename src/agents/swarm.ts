@@ -21,6 +21,7 @@
 import type { Fact, Persona } from '../lib/contracts';
 import type { Feed } from '../lib/adapters/interfaces';
 import { getAdapters } from '../lib/adapters';
+import { listBandChats } from '../lib/adapters/real/band';
 import { runResearchSwarm } from '../lib/agents/researchSwarm';
 
 const AGENT_LABELS: Record<string, string> = {
@@ -54,28 +55,32 @@ function describe(agent: string, kind: string, p: Record<string, unknown>): stri
   return `${kind}: ${rest}`;
 }
 
-/** Band rooms are chat UUIDs. Resolution order: BAND_ROOM_ID env override →
- *  first chat from GET /api/v1/agent/chats (documented at docs.band.ai) →
- *  null (logical room name is used and Band posts fall back to mock). */
+/** Band rooms are chat UUIDs, created ONLY from the Band dashboard (the human
+ *  clicks "New Session" and adds the agent). Resolution: BAND_ROOM_ID env
+ *  override → newest chat from GET /agent/chats, POLLING up to BAND_WAIT_MS
+ *  (default 60s) so a session created mid-run attaches live → null (Band
+ *  posts fall back to mock; the app feed is unaffected). */
 async function resolveBandRoom(): Promise<string | null> {
   if (process.env.BAND_ROOM_ID) return process.env.BAND_ROOM_ID;
   const on = process.env.USE_REAL_BAND === '1' || process.env.USE_REAL_BAND === 'true';
   if (!on || !process.env.BAND_API_KEY) return null;
-  try {
-    const root = (process.env.BAND_REST_URL ?? 'https://app.band.ai').replace(/\/$/, '');
-    const res = await fetch(`${root}/api/v1/agent/chats`, {
-      headers: { 'X-API-Key': process.env.BAND_API_KEY },
-    });
-    if (!res.ok) return null;
-    const j = (await res.json()) as unknown;
-    const arr = Array.isArray(j)
-      ? j
-      : ((j as Record<string, unknown>).chats ?? (j as Record<string, unknown>).data);
-    if (!Array.isArray(arr)) return null;
-    const chat = arr.find((c) => typeof (c as Record<string, unknown>).id === 'string');
-    return chat ? String((chat as Record<string, unknown>).id) : null;
-  } catch {
-    return null;
+  const deadline = Date.now() + Number(process.env.BAND_WAIT_MS ?? 60_000);
+  let warned = false;
+  for (;;) {
+    try {
+      const chats = await listBandChats();
+      if (chats.length > 0) return chats[0].id;
+    } catch {
+      return null;
+    }
+    if (Date.now() >= deadline) return null;
+    if (!warned) {
+      warned = true;
+      console.log(
+        'band: no session yet — open the Band dashboard (app.band.ai), click "New Session", and add this agent. Waiting…',
+      );
+    }
+    await new Promise((r) => setTimeout(r, 3000));
   }
 }
 
@@ -89,6 +94,7 @@ function bridgeFeed(inner: Feed, appBase: string, brandId: string, bandChatId: s
     },
     async post(room, event) {
       const payload = (event.payload ?? {}) as Record<string, unknown>;
+      const message = describe(event.agent, event.kind, payload);
       const deny = event.agent === 'governance' && event.kind === 'error';
       await fetch(`${appBase}/api/brands/${brandId}/events`, {
         method: 'POST',
@@ -98,13 +104,16 @@ function bridgeFeed(inner: Feed, appBase: string, brandId: string, bandChatId: s
           status: deny ? 'failed' : 'running',
           payload: {
             agent: AGENT_LABELS[event.agent] ?? event.agent,
-            message: describe(event.agent, event.kind, payload),
+            message,
             room,
             ...payload,
           },
         }),
       }).catch(() => {});
-      await inner.post(bandRoom(room), event).catch(() => {});
+      // Band gets the humanized line (rendered in the dashboard chat)
+      await inner
+        .post(bandRoom(room), { ...event, payload: { ...payload, __message: message } })
+        .catch(() => {});
     },
   };
 }
