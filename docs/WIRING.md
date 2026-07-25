@@ -87,4 +87,9 @@ from the session brief ≡ `USE_REAL_X=0`.
 | `USE_REAL_BAND` | swarm posts to Band room; bridge mirrors | interim researcher, local events only |
 | `USE_REAL_GEMINI` | Gemini primary in image chain | OpenAI edits → SVG |
 
+Image-chain nuance: the app chain keys on key presence (`GEMINI_API_KEY` /
+`OPENAI_API_KEY`); removing keys is the image kill switch. `USE_REAL_GEMINI`
+governs the script-side adapter set (`getAdapters()`).
+
 Offline zero-env demo: all switches off + no keys → fixtures/mock/SVG — unchanged.
+Drill: `npx tsx scripts/drill-killswitches.ts` (all five verified degrading).
