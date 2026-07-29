@@ -12,8 +12,12 @@ type AutopilotContextValue = {
   status: AutopilotStatus;
   /** Events fired so far, in order. */
   events: AutopilotEvent[];
-  /** No arg → offline fixture replay. With brandId → live orchestration. */
-  start: (opts?: { brandId?: string }) => void;
+  /**
+   * No arg → offline fixture replay. With brandId → live orchestration.
+   * mode 'research' → kick ONLY the Band research swarm (fresh session) and
+   * stream just this run's events; mode 'full' (default) → whole autopilot.
+   */
+  start: (opts?: { brandId?: string; mode?: 'full' | 'research' }) => void;
 };
 
 const AutopilotContext = createContext<AutopilotContextValue>({
@@ -35,10 +39,17 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
   const startedRef = useRef(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const start = useCallback((opts?: { brandId?: string }) => {
+  const start = useCallback((opts?: { brandId?: string; mode?: 'full' | 'research' }) => {
     if (startedRef.current) return;
     startedRef.current = true;
     setStatus('running');
+    setEvents([]);
+
+    const finish = () => {
+      setStatus('done');
+      startedRef.current = false; // allow another run without a page reload
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
 
     const brandId = opts?.brandId;
     if (!brandId) {
@@ -50,10 +61,33 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
           at += 300 + Math.floor(rand() * 900);
           setTimeout(() => {
             setEvents((prev) => [...prev, event]);
-            if (i === all.length - 1) setStatus('done');
+            if (i === all.length - 1) finish();
           }, at);
         });
       });
+      return;
+    }
+
+    if (opts?.mode === 'research') {
+      // research-only: kick the Band swarm (a fresh session) and stream ONLY
+      // this run's events — ?since= keeps prior runs' history out of the feed
+      const since = Date.now();
+      fetch(`/api/brands/${brandId}/research`, { method: 'POST' }).catch(() => {
+        // the swarm posts its own failure event; polling surfaces it
+      });
+      pollRef.current = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/brands/${brandId}/events?since=${since}`);
+          if (!res.ok) return;
+          const { events: fresh } = (await res.json()) as { events: AutopilotEvent[] };
+          setEvents(fresh);
+          if (fresh.some((e) => e.step === 'research' && (e.status === 'done' || e.status === 'failed'))) {
+            finish();
+          }
+        } catch {
+          // dev-server hiccup — next poll retries
+        }
+      }, 1500);
       return;
     }
 
@@ -67,8 +101,7 @@ export function AutopilotProvider({ children }: { children: React.ReactNode }) {
         const { events: all } = (await res.json()) as { events: AutopilotEvent[] };
         setEvents(all);
         if (all.some((e) => e.step === 'verdict' && e.status === 'done')) {
-          setStatus('done');
-          if (pollRef.current) clearInterval(pollRef.current);
+          finish();
         }
       } catch {
         // dev-server hiccup — next poll retries
