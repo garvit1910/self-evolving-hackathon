@@ -65,11 +65,17 @@ engine (Track A, branch `creative-engine-phase2`, merged in `cf644cb`).
 - vector: `src/lib/vector.ts` `MemoryVectorStore` default; `ActianVectorStore`
   implemented only if `ACTIAN_URL` is reachable (A's skeleton endpoints are
   explicitly unconfirmed — do not guess).
-- agent feed: `adapters/real/band.ts` = the only Band client; TeeFeed bridge
-  mirrors rooms → `POST /api/brands/:id/events` (+ `/facts`).
-- research: live default = A's swarm (`scout/analyst/personasmith/researchSwarm`)
-  run as a worker (`src/agents/`); G's interim researcher = kill-switch fallback.
-  Both keep mechanical substring source-quote verification.
+- agent feed: `band-swarm/` (Python, band-sdk 1.5) = the live Band path — six
+  real Band agents (Conductor/Cartographer/Scout/Analyst/Critic/Personasmith),
+  each its own Band identity, conversing via mentions; their tools mirror
+  events → `POST /api/brands/:id/events` and publish → `/facts`.
+  `adapters/real/band.ts` + `src/agents/swarm.ts` = legacy single-identity TS
+  client, kept only behind `BAND_KICKOFF=ts`.
+- research: live default = the Band swarm (`band-swarm/`, kicked off by
+  `kickoff.py` from the research route; agents run via `run_swarm.py`);
+  G's interim researcher = kill-switch fallback. Mechanical substring
+  source-quote verification is now the Critic agent's verify_quote tool —
+  same normalization, adversarial instead of silent.
 - storage: `src/lib/store.ts` `LocalStore` ← `store/creativeStore.ts` demoted to
   scripts-only.
 
@@ -84,7 +90,7 @@ from the session brief ≡ `USE_REAL_X=0`.
 | `USE_REAL_PIONEER` | all text LLM via `PIONEER_BASE_URL/API_KEY/MODEL` | `LLM_*`/OpenAI, else mock copy/panel |
 | `USE_REAL_SENSO` | `SensoContextStore` (ingest/search/writeback) | `LocalContextStore` |
 | `USE_REAL_ACTIAN` | `ActianVectorStore` @ `ACTIAN_URL` | `MemoryVectorStore` |
-| `USE_REAL_BAND` | swarm posts to Band room; bridge mirrors | interim researcher, local events only |
+| `USE_REAL_BAND` | six-agent Band swarm (`band-swarm/`, needs `run_swarm.py` running) | interim researcher, local events only |
 | `USE_REAL_GEMINI` | Gemini primary in image chain | OpenAI edits → SVG |
 
 Image-chain nuance: the app chain keys on key presence (`GEMINI_API_KEY` /

@@ -34,8 +34,10 @@ Base URL (dev): `http://localhost:3002`
   (`upsert(chunks)`, `query(text, k)`), then flip `getVectorStore()`.
 - **Pioneer** → no code: set `LLM_BASE_URL`/`LLM_API_KEY`/`LLM_MODEL`. The
   client (`src/lib/llm.ts`) speaks OpenAI-compatible chat completions.
-- **Band swarm** → replace the interim researcher by POSTing the same
-  routes it uses: `/facts` for extracted facts, `/events` for feed progress.
+- **Band swarm** → implemented in `band-swarm/` (six real Band agents; see
+  band-swarm/README.md). It replaces the interim researcher by POSTing the
+  same routes it uses: `/facts` for verified facts (Conductor's publish_facts
+  tool), `/events` for feed progress (mirrored from every agent tool call).
   After a real Senso write, call `POST /api/learnings/:id/ingested`.
 
 ## Routes
@@ -138,8 +140,10 @@ creatives (`/api/files/creatives/<brandId>/<file>`).
 - `POST /api/brands/:id/metrics` `DailyMetrics[]` → live-sim persistence
 - `POST /api/brands/:id/learnings` `Learning[]` → upsert
 - `POST /api/brands/:id/writeback` `{learningIds?}` → learnings → performance_loop facts, `{version, hash, factIds}`
-- `POST /api/brands/:id/research` `{}` → runs the interim researcher (homepage + ≤2
-  same-origin pages → one LLM extraction → mechanical sourceQuote verification,
-  fabricated quotes dropped) → `{factCount, droppedQuotes, mode: 'live'|'fallback'}`.
-  **TODO(track-a): the swarm replaces this** by POSTing `/facts` + `/events` directly —
-  when facts already exist, Autopilot skips this route automatically.
+- `POST /api/brands/:id/research` `{}` → with `USE_REAL_BAND=1`, kicks off the
+  six-agent Band swarm (`band-swarm/kickoff.py`; agents must be running via
+  `run_swarm.py`) and waits for facts to land; otherwise (or on any swarm
+  failure) runs the interim researcher (homepage + ≤2 same-origin pages → one
+  LLM extraction → mechanical sourceQuote verification, fabricated quotes
+  dropped) → `{factCount, droppedQuotes, mode}`. When facts already exist,
+  Autopilot skips this route automatically.

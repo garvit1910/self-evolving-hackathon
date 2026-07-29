@@ -2,13 +2,19 @@ import { spawn } from 'node:child_process';
 import { runInterimResearch } from '@/lib/research/interim';
 import { getStore } from '@/lib/store';
 
-// Research entry point. Live default (USE_REAL_BAND=1): spawn the Band swarm
-// worker (src/agents/swarm.ts — Scout/Analyst/Personasmith in their own Node
-// process, coordinating through a Band room, mirrored into /events + /facts).
+// Research entry point. Live default (USE_REAL_BAND=1): kick off the Band
+// swarm (band-swarm/ — six real Band agents conversing in a room; kickoff.py
+// posts the opening mention and waits for facts to land via /facts, with the
+// conversation mirrored into /events). The agents themselves must already be
+// running: `cd band-swarm && uv run python run_swarm.py`. Legacy escape hatch:
+// BAND_KICKOFF=ts spawns the old single-identity worker (src/agents/swarm.ts).
 // Kill switch (unset/0) or any swarm failure: the interim researcher, same
 // routes, same feed — the UI cannot tell the producers apart.
 
-const SWARM_TIMEOUT_MS = 180_000;
+// A seven-agent conversation (parallel competitor branch, Critic revision
+// rounds) runs well past the old 180s single-process budget. Must stay above
+// kickoff.py's KICKOFF_TIMEOUT_S (600s) so the child exits on its own.
+const SWARM_TIMEOUT_MS = 660_000;
 
 function swarmEnabled(): boolean {
   return process.env.USE_REAL_BAND === '1' || process.env.USE_REAL_BAND === 'true';
@@ -17,7 +23,12 @@ function swarmEnabled(): boolean {
 function runSwarmWorker(brandId: string, url: string): Promise<number> {
   return new Promise((resolve) => {
     const appBase = `http://localhost:${process.env.PORT ?? 3002}`;
-    const child = spawn('npx', ['tsx', 'src/agents/swarm.ts', brandId, url, appBase], {
+    const legacy = process.env.BAND_KICKOFF === 'ts';
+    const cmd = legacy ? 'npx' : 'uv';
+    const args = legacy
+      ? ['tsx', 'src/agents/swarm.ts', brandId, url, appBase]
+      : ['run', '--project', 'band-swarm', 'python', 'band-swarm/kickoff.py', brandId, url, appBase];
+    const child = spawn(cmd, args, {
       cwd: process.cwd(),
       env: process.env,
       stdio: ['ignore', 'inherit', 'inherit'],

@@ -53,5 +53,10 @@ tapes/
 public/runs/test-creative-run-*/
 !.env.local.example
 
+# band-swarm (Python Band agents): credentials stay local, template is committed
+!band-swarm/.env.example
+band-swarm/.venv/
+__pycache__/
+
 # local-only progress tracking, never commit
 PROGRESS.md

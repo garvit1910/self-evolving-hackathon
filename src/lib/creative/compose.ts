@@ -54,7 +54,10 @@ export function composeBriefs(input: {
   const coreMessage = coreFact?.statement ?? `${brand.name} — built different.`;
 
   // -- angle pool --
-  const competitiveFact = positioning[0] ?? valueProps[0];
+  // market_prior facts (competitor insights from the research swarm) drive the
+  // competitive angle when the brand's own positioning/value_prop are thin
+  const marketPrior = byConfidence('market_prior');
+  const competitiveFact = positioning[0] ?? valueProps[0] ?? marketPrior[0];
   let anglePool: string[];
   let priorSource: Brief['priorSource'];
   if (priors?.angle) {

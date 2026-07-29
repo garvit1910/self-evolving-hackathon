@@ -1,0 +1,14 @@
+[project]
+name = "band-swarm"
+version = "0.1.0"
+description = "SwarmAds brand-research swarm — six Band agents that scrape, debate, verify, and publish"
+requires-python = ">=3.11"
+dependencies = [
+    "band-sdk[anthropic]>=1.5.0",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+    "pydantic>=2.7",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
